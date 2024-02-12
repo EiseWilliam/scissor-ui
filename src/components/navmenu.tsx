@@ -64,6 +64,13 @@ export function MidNavMenu() {
 						</NavigationMenuLink>
 					</Link>
 				</NavigationMenuItem>
+				<NavigationMenuItem>
+					<Link href="/dashboard" legacyBehavior passHref>
+						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
+							Analytics
+						</NavigationMenuLink>
+					</Link>
+				</NavigationMenuItem>
 			</NavigationMenuList>
 		</NavigationMenu>
 	);
