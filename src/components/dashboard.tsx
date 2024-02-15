@@ -41,7 +41,7 @@ export function DashNavMenu() {
 					</Link>
 				</Button>
 				<Button variant="link" className="w-fit p-0 text-black hover:text-blue-600 ">
-					<Link className="flex flex-row items-center gap-1.5 text-sm" href="#">
+					<Link className="flex flex-row items-center gap-1.5 text-sm" href="/dashboard/analytics">
 						<BarChart2Icon className="w-6 h-6" />
 						<span className="text-xs font-medium">Analytics</span>
 					</Link>
