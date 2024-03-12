@@ -11,11 +11,11 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<section className="flex flex-row">
+		<main className="flex flex-row">
 			<SectionProvider>
 				<DashNavMenu />
 				{children}
 			</SectionProvider>
-		</section>
+		</main>
 	);
 }

@@ -1,28 +1,42 @@
-"use client";
+"use client"
 
 import { ShortenLinkVector } from "@/components/background-vectors";
 import NavBar from "@/components/navbar";
-import ShortenerPanel from "@/components/shortner-ui";
+import ShortenerPanel, { AuthShortenerPanel, QRPanel, UrlShortener } from "@/components/home-panels-ui";
 import { Button } from "@/components/ui/button";
 import { UseAuthContext } from "@/context/auth-context";
 import Link from "next/link";
-import {useState} from 'react';
+import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Link2Icon } from "@radix-ui/react-icons";
 
 export default function HomePage() {
-	const {isAuthenticated, setIsAuthenticated} = UseAuthContext();
-	const setState = () => {
-		setIsAuthenticated(!isAuthenticated);
-	}
+	const { isAuthenticated, accessToken, setIsAuthenticated } = UseAuthContext();
 	return (
 		<>
-			<main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-white to-[#f9efff]">
-				<div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
+			<main className="flex min-h-full flex-col items-center justify-center ">
+				<div className="flex flex-col items-center justify-center gap-8 ">
 					<h1 className="text-5xl font-extrabold tracking-tight text-gray-950 sm:text-[5rem]">
 						Scissor <span className="text-blue-600">URL</span> Shortener
 					</h1>
-					<Button onClick={setState}>{isAuthenticated ? "State is true": "state is false"}</Button>
-					<div className="flex items-center justify-around">
-						<ShortenerPanel />
+					<div className="flex items-center gap-1 justify-around">
+						<Tabs defaultValue="short" className="flex flex-row min-w-fit">
+							<TabsList className="flex flex-col gap-2 h-full min-w-fit bg-transparent">
+								<TabsTrigger value="short" className="rounded-l-lg rounded-none w-full inline-flex gap-2">
+									<Link2Icon />
+									Shorten link
+								</TabsTrigger>
+								<TabsTrigger value="qrcode" className="rounded-none w-full">
+									QR code
+								</TabsTrigger>
+							</TabsList>
+							<TabsContent value="short" className="w-[400px]">
+								<UrlShortener />
+							</TabsContent>
+							<TabsContent value="qrcode" className="w-[400px]">
+								<QRPanel />
+							</TabsContent>
+						</Tabs>
 						<ShortenLinkVector className="h-60 w-60" />
 					</div>
 				</div>

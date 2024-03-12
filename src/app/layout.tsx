@@ -21,7 +21,7 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en">
-			<body className={`font-sans ${inter.variable}`}>
+			<body className={`font-sans ${inter.variable} bg-gradient-to-b from-white to-[#f9efff] min-h-screen min-w-screen`}>
 				<AuthProvider>
 					<NavBar />
 					{children}
