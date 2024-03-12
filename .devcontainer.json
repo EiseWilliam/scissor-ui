@@ -1,10 +1,96 @@
 {
-    "name": "scissor-ui",
-    "image": "mcr.microsoft.com/devcontainers/typescript-node:0-18",
-    "customizations": {
-        "vscode": {
-          "extensions": ["streetsidesoftware.code-spell-checker","dbaeumer.vscode-eslint"]
-        }
-      }
+	"name": "Bun",
 
-  }
+	"image": "oven/bun",
+
+	"forwardPorts": [3000],
+
+	"remoteUser": "root",
+
+	"features": {
+		"ghcr.io/devcontainers/features/common-utils:2": {
+			"configureZshAsDefaultShell": true
+		},
+		"ghcr.io/devcontainers/features/github-cli:1": {},
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+			"moby": false,
+			"dockerDashComposeVersion": "v2"
+		}
+	},
+	"containerEnv": {},
+	"remoteEnv": {},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"oven.bun-vscode",
+				"bierner.lit-html",
+				"better-ts-errors.better-ts-errors",
+				"ms-vscode.makefile-tools",
+				"bierner.markdown-preview-github-styles",
+				"bierner.markdown-emoji",
+				"bierner.markdown-checkbox",
+				"bierner.jsdoc-markdown-highlighting",
+				"ms-vscode.wordcount",
+				"albert.tabout",
+				"streetsidesoftware.code-spell-checker",
+				"bierner.comment-tagged-templates",
+				"dzhavat.bracket-pair-toggler",
+				"formulahendry.code-runner",
+				"github.vscode-github-actions",
+				"sburg.vscode-javascript-booster",
+				"otovo-oss.htmx-tags",
+				"visualstudioexptteam.intellicode-api-usage-examples",
+				"htmlhint.vscode-htmlhint",
+				"ms-python.isort",
+				"wix.vscode-import-cost",
+				"adpyke.codesnap",
+				"magicstack.magicpython",
+				"mgesbert.python-path",
+				"christian-kohler.path-intellisense",
+				"njqdev.vscode-python-typehint",
+				"mtxr.sqltools-driver-mssql",
+				"mtxr.sqltools",
+				"visualstudioexptteam.vscodeintellicode",
+				"batisteo.vscode-django",
+				"ecmel.vscode-html-css",
+				"mongodb.mongodb-vscode",
+				"davidanson.vscode-markdownlint",
+				"slightc.pip-manager",
+				"etmoffat.pip-packages",
+				"ms-python.pylint",
+				"ckolkman.vscode-postgres",
+				"cweijan.dbclient-jdbc",
+				"talhabalaj.actual-font-changer",
+				"ms-python.black-formatter",
+				"bradlc.vscode-tailwindcss",
+				"ms-python.debugpy",
+				"wallabyjs.console-ninja",
+				"github.copilot-chat",
+				"ms-python.python",
+				"cweijan.vscode-postgresql-client2",
+				"ms-python.vscode-pylance",
+				"rvest.vs-code-prettier-eslint",
+				"biomejs.biome",
+				"github.copilot",
+				"charliermarsh.ruff",
+				"eamodio.gitlens",
+				"codium.codium",
+				"ms-azuretools.vscode-docker"
+			],
+			"settings": {
+				"terminal.integrated.defaultProfile.linux": "zsh",
+				"debug.internalConsoleOptions": "neverOpen",
+				"editor.formatOnPaste": true,
+				"editor.guides.bracketPairs": "active",
+				"scm.defaultViewMode": "tree",
+				"diffEditor.diffAlgorithm": "advanced",
+				"diffEditor.experimental.showMoves": true,
+				"diffEditor.renderSideBySide": false,
+				"files.watcherExclude": {
+					"**/node_modules/**": true
+				},
+				"betterTypeScriptErrors.prettify": true
+			}
+		}
+	}
+}
