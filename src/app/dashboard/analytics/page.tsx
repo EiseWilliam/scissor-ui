@@ -1,12 +1,8 @@
-"use client"
-import Analytics from '@/components/analytics'; // Fix: Changed named import to default import
-import React from 'react'
-
-
+import Analytics from "@/components/analytics";
+import React from "react";
+export const revalidate = 60
 function DashBoardPage() {
-    return (
-        <Analytics />
-    )
+	return <Analytics />;
 }
 
-export default DashBoardPage
+export default DashBoardPage;

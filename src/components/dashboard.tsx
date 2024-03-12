@@ -5,30 +5,9 @@ import { Input } from "@/components/ui/input";
 import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card";
 import { useState } from "react";
 import { Logo } from "@/components/icons";
-import { ChevronDownIcon, Link2Icon } from "@radix-ui/react-icons";
+import { ChevronDownIcon, Link2Icon, PlusIcon } from "@radix-ui/react-icons";
 import { UseSectionContext } from "@/context/section-context";
 
-// export function DashHeader(){
-//   return (
-//     <header className="flex h-14 lg:h-[60px] items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40">
-// 					<Link className="lg:hidden" href="#">
-// 						<Package2Icon className="h-6 w-6" />
-// 						<span className="sr-only">Home</span>
-// 					</Link>
-// 					<div className="flex-1">
-// 						<h1 className="font-semibold text-lg">My Urls</h1>
-// 					</div>
-// 					<Button
-// 						className="rounded-full border border-gray-200 w-8 h-8 dark:border-gray-800"
-// 						size="icon"
-// 						variant="ghost"
-// 					>
-// 						<ChevronDownIcon className="w-4 h-4" />
-// 						<span className="sr-only">Toggle user menu</span>
-// 					</Button>
-// 				</header>
-//   )
-// }
 export function DashNavMenu() {
   const { activeSection, setActiveSection} = UseSectionContext()
 	return (
@@ -62,105 +41,7 @@ export function DashNavMenu() {
 		</div>
 	);
 }
-// export default function Component() {
-//   return (
-//     <div className="flex">
 
-//       <div className="flex flex-col flex-1">
-//         <header className="flex items-center h-16 px-4 border-b">
-//           <Button className="rounded-full md:hidden" variant="outline">
-//             <ChevronLeftIcon className="" />
-//             <span className="sr-only">Toggle sidebar</span>
-//           </Button>
-//           <nav className="hidden ml-6 text-lg font-medium md:flex md:items-center md:gap-5 md:text-sm lg:gap-6">
-//             <Link className="font-bold" href="#">
-//               Home
-//             </Link>
-//             <Link className="text-gray-500 dark:text-gray-400" href="#">
-//               Analytics
-//             </Link>
-//             <Link className="text-gray-500 dark:text-gray-400" href="#">
-//               Products
-//             </Link>
-//             <Link className="text-gray-500 dark:text-gray-400" href="#">
-//               Customers
-//             </Link>
-//           </nav>
-//           <div className="flex items-center w-full gap-4 md:ml-auto md:gap-2 lg:gap-4">
-//             <form className="flex-1 ml-auto sm:flex-initial">
-//               <div className="relative">
-//                 <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
-//                 <Input
-//                   className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
-//                   placeholder="Search orders..."
-//                   type="search"
-//                 />
-//               </div>
-//             </form>
-//             <Button className="rounded-full" size="icon" variant="ghost">
-//               <img
-//                 alt="Avatar"
-//                 className="rounded-full"
-//                 height="32"
-//                 src="/placeholder.svg"
-//                 style={{
-//                   aspectRatio: "32/32",
-//                   objectFit: "cover",
-//                 }}
-//                 width="32"
-//               />
-//               <span className="sr-only">Toggle user menu</span>
-//             </Button>
-//           </div>
-//         </header>
-//         <main className="flex-1 p-4 md:p-6 lg:p-8">
-//           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-//             <Card>
-//               <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-//                 <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-//                 <DollarSignIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-//               </CardHeader>
-//               <CardContent>
-//                 <div className="text-2xl font-bold">$45,231.89</div>
-//                 <p className="text-xs text-gray-500 dark:text-gray-400">+20.1% from last month</p>
-//               </CardContent>
-//             </Card>
-//             <Card>
-//               <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-//                 <CardTitle className="text-sm font-medium">Subscriptions</CardTitle>
-//                 <UsersIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-//               </CardHeader>
-//               <CardContent>
-//                 <div className="text-2xl font-bold">+2350</div>
-//                 <p className="text-xs text-gray-500 dark:text-gray-400">+180.1% from last month</p>
-//               </CardContent>
-//             </Card>
-//             <Card>
-//               <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-//                 <CardTitle className="text-sm font-medium">Sales</CardTitle>
-//                 <CreditCardIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-//               </CardHeader>
-//               <CardContent>
-//                 <div className="text-2xl font-bold">+12,234</div>
-//                 <p className="text-xs text-gray-500 dark:text-gray-400">+19% from last month</p>
-//               </CardContent>
-//             </Card>
-//             <Card>
-//               <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-//                 <CardTitle className="text-sm font-medium">Active Now</CardTitle>
-//                 <ActivityIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-//               </CardHeader>
-//               <CardContent>
-//                 <div className="text-2xl font-bold">+573</div>
-//                 <p className="text-xs text-gray-500 dark:text-gray-400">+201 since last hour</p>
-//               </CardContent>
-//             </Card>
-//           </div>
-//         </main>
-//       </div>
-//     </div>
-//   )
-// }
 
 function ActivityIcon(props: React.SVGProps<SVGSVGElement>) {
 	return (

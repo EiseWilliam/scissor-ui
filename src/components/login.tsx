@@ -35,17 +35,17 @@ async function loginUser(email: string, password: string) {
 	//   .then(data => data.json()).catch(err => console.log(err))
 	if (res.ok) {
 		const responseData: LoginResponse = await res.json();
-		window.localStorage.setItem("token", responseData.access_token);
 		window.localStorage.setItem("refreshToken", responseData.refresh_token);
+		return [res, responseData]
 	} else {
 		console.log(res);
 	}
-	return res;
+	return [res, null];
 }
 
 export default function LoginForm() {
 	const router = useRouter();
-	const { isAuthenticated, setIsAuthenticated } = UseAuthContext();
+	const { isAuthenticated, setIsAuthenticated,accessToken,setAccessToken } = UseAuthContext();
 	const [userEmail, setUserEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -57,9 +57,10 @@ export default function LoginForm() {
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		setIsLoading(true);
-		const response = await loginUser(userEmail, password);
+		const [response, data] = await loginUser(userEmail, password);
 		if (response.ok) {
 			setIsLoading(false);
+			setAccessToken(data.access_token);
 			setIsAuthenticated(true);
 			router.push("/");
 		} else {
