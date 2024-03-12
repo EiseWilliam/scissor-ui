@@ -4,10 +4,10 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 import { Stream } from "stream";
 import { useRouter } from "next/navigation";
 
-type AuthContextType = {
+export type AuthContextType = {
 	isAuthenticated: boolean;
 	handleRefreshLogin: () => void;
-	accessToken: string;
+	accessToken: string | null;
 	setAccessToken: (token: string) => void;
 	setIsAuthenticated: (value: boolean) => void;
 };
@@ -24,12 +24,20 @@ const defaultAuthState = () : boolean => {
     }
     return false;
 }
+const defaultAccessToken = () => {
+	let token: string |  null = "";
+	if (typeof window !== 'undefined') {
+		token = window.localStorage.getItem("token");
+	}
+	return token
+
+}
 export default function AuthProvider({
 	children,
 }: { children: React.ReactNode }) {
 	const router = useRouter();
 	const [isAuthenticated, setIsAuthenticated] = useState(defaultAuthState());
-	const [accessToken, setAccessToken] = useState("");
+	const [accessToken, setAccessToken] = useState(defaultAccessToken());
 	const handleRefreshLogin = () => {
 		const refreshToken = getRefreshToken();
 		if (refreshToken) {
