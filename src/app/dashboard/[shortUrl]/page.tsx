@@ -2,7 +2,7 @@
 
 
 import { ShortenedUrlCard } from '@/components/MyUrls';
-import { Overview, overviewData } from '@/components/analytics';
+import { Overview, type overviewData } from '@/components/analytics';
 import {
   Card,
   CardContent,
@@ -12,13 +12,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useRequest } from '@/lib/hooks';
-import { urlDetails } from '@/lib/types';
-import { redirect } from 'next/navigation'
-import React from "react";
-import useSWR from 'swr'
+import { type urlDetails } from '@/lib/types';
 
 
-function page({ params }: { params: { shortUrl: string } }) {
+function Page({ params }: { params: { shortUrl: string } }) {
   const { data, error, isLoading } = useRequest<urlDetails>(`http://localhost:8000/+${params.shortUrl}`)
   if (isLoading) return <div>Loading...</div>
   if (error) return <div>Error: {error}</div>
@@ -26,7 +23,7 @@ function page({ params }: { params: { shortUrl: string } }) {
   return (
 
     <div className="w-full max-h-fit bg-white rounded-lg shadow-lg p-6">
-      <ShortenedUrlCard {...data} />
+      <ShortenedUrlCard data={data} />
       <div className="flex fex-row gap-2">
         <QRCode />
         <QuickStats />
@@ -37,16 +34,9 @@ function page({ params }: { params: { shortUrl: string } }) {
   )
 }
 
-export default page
+export default Page
 
 
-const BackButton = () => {
-  return (
-    <button type="button" className="text-blue-500 hover:text-blue-700 mb-4">
-      &lt; Back to list
-    </button>
-  );
-};
 
 
 const QRCode = () => {

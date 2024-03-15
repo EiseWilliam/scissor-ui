@@ -1,17 +1,16 @@
 "use client"
+import { Link2Icon } from '@radix-ui/react-icons';
+import { QRPanel, UrlShortener } from '@/components/home-panels-ui';
+import { ShortenLinkVector } from '@/components/background-vectors';
+import {
+	Tabs,
+	TabsContent,
+	TabsList,
+	TabsTrigger
+	} from '@/components/ui/tabs';
 
-import { ShortenLinkVector } from "@/components/background-vectors";
-import NavBar from "@/components/navbar";
-import ShortenerPanel, { AuthShortenerPanel, QRPanel, UrlShortener } from "@/components/home-panels-ui";
-import { Button } from "@/components/ui/button";
-import { UseAuthContext } from "@/context/auth-context";
-import Link from "next/link";
-import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Link2Icon } from "@radix-ui/react-icons";
 
 export default function HomePage() {
-	const { isAuthenticated, accessToken, setIsAuthenticated } = UseAuthContext();
 	return (
 		<>
 			<main className="flex min-h-full flex-col items-center justify-center ">

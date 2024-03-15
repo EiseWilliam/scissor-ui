@@ -10,7 +10,7 @@ const inter = Inter({
 
 export const metadata = {
 	title: "Trim Url shortener",
-	description: "Enterprise level url shortenening services for free",
+	description: "Enterprise level url shortening services for free",
 	icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
