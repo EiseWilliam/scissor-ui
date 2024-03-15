@@ -2,7 +2,8 @@
 
 
 import { ShortenedUrlCard } from '@/components/MyUrls';
-import { Overview, type overviewData } from '@/components/analytics';
+import { Overview } from '@/components/analytics';
+import type { overviewData } from "@/types/analytics";
 import {
   Card,
   CardContent,
@@ -11,12 +12,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useRequest } from '@/lib/hooks';
 import { type urlDetails } from '@/lib/types';
+import { authenticatedFetcher } from "@/lib/utils"
+import useSWR from 'swr';
 
 
 function Page({ params }: { params: { shortUrl: string } }) {
-  const { data, error, isLoading } = useRequest<urlDetails>(`http://localhost:8000/+${params.shortUrl}`)
+  // const { data, error, isLoading } = useRequest<urlDetails>(`http://localhost:8000/+${params.shortUrl}`)
+  const {error,data,isLoading } = useSWR(`/+${params.shortUrl}`, authenticatedFetcher)
   if (isLoading) return <div>Loading...</div>
   if (error) return <div>Error: {error}</div>
   if (!data) return <div>No data</div>
