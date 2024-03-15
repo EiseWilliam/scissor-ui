@@ -14,12 +14,12 @@ export type AuthContextType = {
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
-const defaultAuthState = () : boolean => {
+const defaultAuthState = (): boolean => {
     let token: string | null = "";
     if (typeof window !== 'undefined') {
         token = window.localStorage.getItem("refreshToken");
     }
-    if(token) {
+    if (token) {
         return true;
     }
     return false;
@@ -29,8 +29,7 @@ const defaultAccessToken = () => {
 	if (typeof window !== 'undefined') {
 		token = window.localStorage.getItem("token");
 	}
-	return token
-
+	return token ?? null;
 }
 export default function AuthProvider({
 	children,
@@ -79,7 +78,7 @@ export default function AuthProvider({
 
 export function getRefreshToken(): string {
 	const refreshToken: string | null = JSON.parse(
-		window.localStorage.getItem("refresh_token") || "",
+		window.localStorage.getItem("refresh_token") ?? "",
 	);
 	if (refreshToken) {
 		return refreshToken;
