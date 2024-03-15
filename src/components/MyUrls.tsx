@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { CalendarIcon, CopyIcon, PlusIcon } from "@radix-ui/react-icons";
 import { UseAuthContext } from "@/context/auth-context";
 import { urlDetails } from "@/lib/types";
-import { formatDate } from "@/lib/utils";
+import { authenticatedFetcher, axiosRequest, formatDate } from "@/lib/utils";
 import React, { FC, ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
 import {
@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import useSWR from "swr";
+
 
 interface ShortenedUrlCardProps extends ComponentPropsWithoutRef<"div"> {
 	data: urlDetails;
@@ -77,56 +79,33 @@ export const ShortenedUrlCard: FC<ShortenedUrlCardProps> = ({
 		</Card>
 	);
 };
+
 export function MyUrls() {
 	const { isAuthenticated, accessToken, setIsAuthenticated } = UseAuthContext();
-	const [isLoading, setIsLoading] = useState(true);
-	const [data, setData] = useState<urlDetails[]>([]);
-	const url = "http://localhost:8000/api/url/my_urls";
-	const headers = {
-		accept: "application/json",
-		Authorization: `Bearer ${accessToken}`,
-	};
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-	useEffect(() => {
-		fetch(url, {
-			method: "GET",
-			headers: headers,
-		})
-			.then((response) => response.json())
-			.then((data) => {
-				setData(data.urls);
-				setIsLoading(false);
-			})
-			.catch((error) => console.error("Error:", error));
-	}, []);
+	const url = "/url/my_urls";
+	const { data, error, isLoading } = useSWR(url, authenticatedFetcher);
 	return (
 		<section className="flex flex-col w-full p-2">
 			<div className="flex flex-row justify-between items-center p-2">
 				<h1 className="text-slate-800 font-bold text-3xl">My Links</h1>
-				<Button
-					variant="default"
-					className=" px-4 text-white bg-blue-600  w-fit"
-				>
-					<Link
-						className="flex flex-row items-center gap-1.5 text-sm"
-						href="/dashboard/new"
-					>
+				<Button variant="default" className=" px-4 text-white bg-blue-600  w-fit">
+					<Link className="flex flex-row items-center gap-1.5 text-sm" href="/dashboard/new">
 						<PlusIcon className="w-6 h-6" />
 						<span className="text-xs font-medium">New</span>
 					</Link>
 				</Button>
 			</div>
-			<div className="flex gap-2 flex-col">
-				{data.map((data, index) => (
-					<Link
-						key={data.id}
-						href={`/dashboard/${data.short_url}`}
-						className=""
-					>
-						<ShortenedUrlCard {...data} />
-					</Link>
-				))}
-			</div>
+			{isLoading && <p>Loading...</p>}
+			{error && <p>Error: {error.message}</p>}
+			{!isLoading && !error && (
+				<div className="flex gap-2 flex-col">
+					{data.map((data: urlDetails) => (
+						<Link key={data.id} href={`/dashboard/${data.short_url}`} className="">
+							<ShortenedUrlCard data={data} />
+						</Link>
+					))}
+				</div>
+			)}
 		</section>
 	);
 }
@@ -166,7 +145,7 @@ export function EditButton({ currentData }) {
 				<DrawerHeader className="text-left">
 					<DrawerTitle>Edit profile</DrawerTitle>
 					<DrawerDescription>
-						Make changes to your profile here. Click save when you're done.
+						Make changes to your profile here. Click save when you&apos;re done.
 					</DrawerDescription>
 				</DrawerHeader>
 				<ProfileForm className="px-4" currentData={currentData} />

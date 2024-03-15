@@ -17,7 +17,7 @@ import { motion } from "framer-motion";
 import { useCopy } from "@/lib/hooks";
 import { Skeleton } from "@/components/ui/skeleton";
 import useSWRImmutable from "swr";
-import { fetcher, request } from "@/lib/utils";
+import { api, fetcher, request } from "@/lib/utils";
 import {
 	Form,
 	FormControl,
@@ -30,9 +30,7 @@ import {
 import { UseAuthContext } from "@/context/auth-context";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
-type urlClicks = {
-	[url: string]: number;
-};
+type urlClicks = Record<string, number>;
 
 function RecentURLs() {
 	const [urlsData, setUrlsData] = useState<urlClicks>({});
@@ -67,6 +65,7 @@ function RecentURLs() {
 			setIsLoading(false);
 		}
 	}, []);
+
 	return (
 		<div>
 			<h2 className="text-lg text-left font-medium text-gray-900 dark:text-white">
@@ -138,7 +137,7 @@ export function AShortenerPanel() {
 	const verifyCustom = (alias: string) => {
 		fetcher(`/url/verify_custom?alias=${alias}`).then((d) =>
 			setAliasAvailable(d),
-		);
+		).catch((e) => console.log(e));
 	};
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
@@ -240,7 +239,7 @@ export function AuthShortenerPanel() {
 	const verifyCustom = (alias: string) => {
 		fetcher(`/url/verify_custom?alias=${alias}`).then((d) =>
 			setAliasAvailable(d),
-		);
+		).catch(error => console.log(error));
 	};
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
@@ -340,7 +339,11 @@ export function UrlShortener() {
 	const [error, setError] = useState("");
 	const [newUrls, setNewUrls] = useState<string[]>([]);
 
-	// ... (verifyCustom function)
+	const verifyCustom = (alias: string) => {
+		fetcher(`/url/verify_custom?alias=${alias}`).then((d) =>
+			setAliasAvailable(d),
+		).catch((e) => console.log(e));
+	};
 
 	const config = {
 		headers: {
@@ -362,7 +365,7 @@ export function UrlShortener() {
 
 		try {
 			if (isAdvanced) {
-				const res = await request.post(
+				const res = api.post(
 					"/url/shorten",
 					{ url: longUrl, custom_alias: alias },
 					config,
@@ -390,7 +393,6 @@ export function UrlShortener() {
 		}
 	};
 
-	// ... (addValueToArray function)
 
 	return (
 		<div className="p-8 bg-white w-full min-w-fit h-fit dark:bg-gray-800">

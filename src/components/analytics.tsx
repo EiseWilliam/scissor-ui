@@ -1,8 +1,16 @@
-"use client"
+"use client";
 
-import React, { useEffect, useRef, useState } from 'react';
-import { Bar, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { BarChart } from '@tremor/react';
+import React from "react";
+import {
+	CartesianGrid,
+	Line,
+	LineChart,
+	ResponsiveContainer,
+	Tooltip,
+	XAxis,
+	YAxis,
+} from "recharts";
+import { BarChart } from "@tremor/react";
 import {
 	Card,
 	CardContent,
@@ -12,20 +20,10 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectLabel,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import {
 	Table,
 	TableBody,
 	TableCaption,
 	TableCell,
-	TableFooter,
 	TableHead,
 	TableHeader,
 	TableRow,
@@ -33,48 +31,22 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import WMap from "@/components/world-map";
 import { ChevronLeftIcon } from "@radix-ui/react-icons";
-import { Divide } from "lucide-react";
-import useSWR from 'swr';
-interface ApiReturnData {
-	overview: overviewData;
-	timeline: timelineData;
-	referrers: referrersData;
-	location: locationData;
-}
+import useSWR from "swr";
+import {
+	ApiReturnData,
+	dict,
+	locationData,
+	overviewData,
+	timelineData,
+} from "@/types/analytics";
+import { cn } from "@/lib/utils";
 
-export type overviewData = {
-	clicks: number;
-	scans: number;
-	last_activity: string;
-	total_engagement: number;
-};
-type dict = {
-	[key: string]: number;
-};
-type timelineData = {
-	count: dict;
-};
-type referrersData = dict;
-
-type locationData = {
-	countries: dict;
-	cities: dict;
-	country_codes: dict;
-};
-// async function getData(): Promise<ApiReturnData> {
-// 	try {
-// 		const res = await fetch("http://localhost:8000/api/analytics/8wiCzrs",{ 
-// 			cache: 'no-store' 
-// 		});
-// 		const data = await res.json();
-// 		return data as ApiReturnData;
-// 	} catch (err) {
-// 		alert(err);
-// 	}
-// }
-function Analytics() {
+const Analytics = () => {
 	const fetcher = (...args: any[]) => fetch(args[0]).then((res) => res.json());
-	const { data, error, isLoading } = useSWR<ApiReturnData>('http://localhost:8000/api/analytics/8wiCzrs', fetcher);
+	const { data, error, isLoading } = useSWR<ApiReturnData>(
+		"http://localhost:8000/api/analytics/8wiCzrs",
+		fetcher,
+	);
 	return (
 		<div className="py-2 flex flex-col gap-2 w-screen ">
 			<div className="flex items-center flex-row gap-10">
@@ -84,8 +56,14 @@ function Analytics() {
 			<div className="flex flex-col gap-2 px-10 h-fit  w-full">
 				{!isLoading && !error && data && (
 					<>
-						<Overview data={data.overview} className="w-full h-fit tesxt-red-600" />
-						<Timeline data={data.timeline} className="w-full bg-white rounded-lg shadow-md p-4" />
+						<Overview
+							data={data.overview}
+							className="w-full h-fit text-red-600"
+						/>
+						<Timeline
+							data={data.timeline}
+							className="w-full bg-white rounded-lg shadow-md p-4"
+						/>
 						<LocationMap data={data.location} className="col-span-2" />
 						<LocationTable data={data.location} />
 						<Referrer />
@@ -94,49 +72,60 @@ function Analytics() {
 			</div>
 		</div>
 	);
-
-}
-
+};
 
 export default Analytics;
 
-interface CardProps<DataType> {
-	className?: string;
+interface CardProps<DataType> extends React.HTMLAttributes<HTMLDivElement> {
 	data: DataType;
 }
 const Timeline: React.FC<CardProps<timelineData>> = ({ data, ...props }) => {
 	const options: Intl.DateTimeFormatOptions = {
-		weekday: 'short',
-		year: 'numeric',
-		month: 'short',
-		day: 'numeric'
+		weekday: "short",
+		year: "numeric",
+		month: "short",
+		day: "numeric",
 	};
-	const formatDate = (dateStr: string, opts: Intl.DateTimeFormatOptions = options) => new Date(dateStr).toLocaleDateString('en-US', opts);
-	const chartData = Object.entries(data.count).map(([timestamp, clicks]: [string, number]) => ({
-		date: formatDate(timestamp),
-		clicks: clicks
-	}));
+	const formatDate = (
+		dateStr: string,
+		opts: Intl.DateTimeFormatOptions = options,
+	) => new Date(dateStr).toLocaleDateString("en-US", opts);
+	const chartData = Object.entries(data.count).map(
+		([timestamp, clicks]: [string, number]) => ({
+			date: formatDate(timestamp),
+			clicks: clicks,
+		}),
+	);
 	return (
-		<div className={props.className}>
+		<div {...props}>
 			<h2 className="text-xl font-bold mb-4">Clicks and Scan Timeline</h2>
 			<ResponsiveContainer width="100%" height={300}>
-				<LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+				<LineChart
+					data={chartData}
+					margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+				>
 					<XAxis dataKey="date" stroke="#8884d8" />
 					<YAxis stroke="#8884d8" />
 					<CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
 					{/* <CartesianGrid strokeDasharray="3 3" /> */}
 					<Tooltip />
-					<Line type="monotone" dataKey="clicks" stroke="#8884d8" strokeWidth={2} dot={{ stroke: '#8884d8', strokeWidth: 2 }} />
+					<Line
+						type="monotone"
+						dataKey="clicks"
+						stroke="#8884d8"
+						strokeWidth={2}
+						dot={{ stroke: "#8884d8", strokeWidth: 2 }}
+					/>
 				</LineChart>
 			</ResponsiveContainer>
 		</div>
 	);
 };
 
-
-
-
-export const Overview: React.FC<CardProps<overviewData>> = ({ data, ...props }) => {
+export const Overview: React.FC<CardProps<overviewData>> = ({
+	data,
+	...props
+}) => {
 	return (
 		<Card {...props}>
 			<CardHeader>
@@ -144,7 +133,7 @@ export const Overview: React.FC<CardProps<overviewData>> = ({ data, ...props }) 
 					Overview
 				</CardTitle>
 			</CardHeader>
-			<CardContent className="flex flex-row justfiy-between">
+			<CardContent className="flex flex-row justify-between">
 				<p>Scans</p>
 				<span className="flex-grow">312</span>
 			</CardContent>
@@ -169,7 +158,7 @@ const LocationMap: React.FC<CardProps<locationData>> = ({ data, ...props }) => {
 					Activities by Location
 				</CardTitle>
 			</CardHeader>
-			<CardContent className="flex flex-row justfiy-between">
+			<CardContent className="flex flex-row justify-between">
 				<WMap data={data.country_codes} className="bg-slate-100 rounded-3xl" />
 			</CardContent>
 			<CardFooter>
@@ -181,10 +170,10 @@ const LocationMap: React.FC<CardProps<locationData>> = ({ data, ...props }) => {
 
 const LocationTable: React.FC<CardProps<locationData>> = ({
 	data,
-	...props
+	className,
 }) => {
 	return (
-		<Tabs defaultValue="countries" className="w-[400px]">
+		<Tabs defaultValue="countries" className={cn("w-[400px]", className)}>
 			<TabsList className="grid w-full grid-cols-2">
 				<TabsTrigger value="countries">Countries</TabsTrigger>
 				<TabsTrigger value="cities">Cities</TabsTrigger>
@@ -199,9 +188,7 @@ const LocationTable: React.FC<CardProps<locationData>> = ({
 	);
 };
 
-const CountriesTable: React.FC<{ data: dict }> = ({
-	data,
-}) => {
+const CountriesTable: React.FC<{ data: dict }> = ({ data }) => {
 	return (
 		<Table>
 			<TableCaption>Countries by Visit</TableCaption>
@@ -214,20 +201,15 @@ const CountriesTable: React.FC<{ data: dict }> = ({
 			<TableBody>
 				{Object.entries(data).map(([key, value]) => (
 					<TableRow key={key}>
-						{/* <TableCell className="font-medium">{invoice.invoice}</TableCell> */}
 						<TableCell>{key}</TableCell>
 						<TableCell>{value}</TableCell>
-						{/* <TableCell className="text-right">{invoice.totalAmount}</TableCell> */}
 					</TableRow>
 				))}
 			</TableBody>
-
 		</Table>
 	);
 };
-const CitiesTable: React.FC<{ data: dict }> = ({
-	data,
-}) => {
+const CitiesTable: React.FC<{ data: dict }> = ({ data }) => {
 	return (
 		<Table>
 			<TableCaption>Cities by Visit</TableCaption>
@@ -240,10 +222,8 @@ const CitiesTable: React.FC<{ data: dict }> = ({
 			<TableBody>
 				{Object.entries(data).map(([key, value]) => (
 					<TableRow key={key}>
-						{/* <TableCell className="font-medium">{invoice.invoice}</TableCell> */}
 						<TableCell>{key}</TableCell>
 						<TableCell>{value}</TableCell>
-						{/* <TableCell className="text-right">{invoice.totalAmount}</TableCell> */}
 					</TableRow>
 				))}
 			</TableBody>
@@ -251,20 +231,19 @@ const CitiesTable: React.FC<{ data: dict }> = ({
 	);
 };
 
-
 interface DataPoint {
 	name: string;
 	value: number;
 }
 
 const data: DataPoint[] = [
-	{ name: 'LinkedIn', value: 40 },
-	{ name: 'Facebook', value: 22 },
-	{ name: 'Google', value: 18 },
-	{ name: 'Twitter', value: 12 },
-	{ name: 'Bing', value: 8 },
-	{ name: 'Direct', value: 6 },
-	{ name: 'Other', value: 2 },
+	{ name: "LinkedIn", value: 40 },
+	{ name: "Facebook", value: 22 },
+	{ name: "Google", value: 18 },
+	{ name: "Twitter", value: 12 },
+	{ name: "Bing", value: 8 },
+	{ name: "Direct", value: 6 },
+	{ name: "Other", value: 2 },
 ];
 
 const Referrer: React.FC = () => {
@@ -283,12 +262,11 @@ const Referrer: React.FC = () => {
 				<BarChart
 					data={data}
 					index="name"
-					categories={['value']}
-					colors={['blue']}
+					categories={["value"]}
+					colors={["blue"]}
 					yAxisWidth={48}
 					onValueChange={(v) => console.log(v)}
 				/>
-
 			</ResponsiveContainer>
 		</div>
 	);

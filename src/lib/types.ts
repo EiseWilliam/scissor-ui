@@ -1,3 +1,4 @@
+import type { SVGProps} from 'react'
 export type urlDetails = {
     id: string,
     title: string,
@@ -8,3 +9,7 @@ export type urlDetails = {
     created_at: string,
     updated_at: string
   }
+
+export interface IconProps extends SVGProps<SVGSVGElement> {
+	title?: string; 
+}

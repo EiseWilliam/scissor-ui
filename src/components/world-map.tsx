@@ -24,9 +24,7 @@ const containerStyle = {
 
 export const colorScale = ["#E2AEFF", "#5E32CA"];
 
-interface MapData {
-	[countryCode: string]: number; // Country code as key, value as number
-}
+type MapData = Record<string, number>;
 
 interface WMapProps {
 	data: MapData;

@@ -1,37 +1,47 @@
 "use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card";
-import { useState } from "react";
-import { Logo } from "@/components/icons";
-import { ChevronDownIcon, Link2Icon, PlusIcon } from "@radix-ui/react-icons";
-import { UseSectionContext } from "@/context/section-context";
+import { Link2Icon } from "@radix-ui/react-icons";
+
 
 export function DashNavMenu() {
-  const { activeSection, setActiveSection} = UseSectionContext()
 	return (
 		<div className="flex flex-col w-fit h-screen border-r hidden bg-gray-100/40 lg:block dark:bg-gray-800/40 pr-10">
 			<nav className="flex-1 flex flex-col items-start py-4 justify-start gap-1 px-10 text-sm">
-				<Button variant="link" className="w-fit p-0 text-black hover:text-blue-600">
+				<Button
+					variant="link"
+					className="w-fit p-0 text-black hover:text-blue-600"
+				>
 					<Link className="flex flex-row items-center gap-1.5 text-sm" href="#">
 						<Link2Icon className="w-6 h-6" />
 						<span className="text-xs font-medium">My Urls</span>
 					</Link>
 				</Button>
-				<Button variant="link" className="w-fit p-0 text-black hover:text-blue-600 ">
-					<Link className="flex flex-row items-center gap-1.5 text-sm" href="/dashboard/analytics">
+				<Button
+					variant="link"
+					className="w-fit p-0 text-black hover:text-blue-600 "
+				>
+					<Link
+						className="flex flex-row items-center gap-1.5 text-sm"
+						href="/dashboard/analytics"
+					>
 						<BarChart2Icon className="w-6 h-6" />
 						<span className="text-xs font-medium">Analytics</span>
 					</Link>
 				</Button>
-				<Button variant="link" className="w-fit p-0 text-black hover:text-blue-600 ">
+				<Button
+					variant="link"
+					className="w-fit p-0 text-black hover:text-blue-600 "
+				>
 					<Link className="flex flex-row items-center gap-1.5 text-sm" href="#">
 						<UsersIcon className="w-6 h-6" />
 						<span className="text-xs font-medium">Customers</span>
 					</Link>
 				</Button>
-				<Button variant="link" className="w-fit p-0 text-black hover:text-blue-600 ">
+				<Button
+					variant="link"
+					className="w-fit p-0 text-black hover:text-blue-600 "
+				>
 					<Link className="flex flex-row items-center gap-1.5 text-sm" href="#">
 						<SettingsIcon className="w-6 h-6" />
 						<span className="text-xs font-medium">Settings</span>
@@ -41,7 +51,6 @@ export function DashNavMenu() {
 		</div>
 	);
 }
-
 
 function ActivityIcon(props: React.SVGProps<SVGSVGElement>) {
 	return (

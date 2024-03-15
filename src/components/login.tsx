@@ -13,60 +13,41 @@ import {
 	CardDescription,
 	CardContent,
 } from "./ui/card";
-import { FormEvent, useEffect, useRef, useState } from "react";
-import axios from "axios";
-import useAuth from "@/lib/hooks";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LoginResponse } from "@/types";
-import { LoadButton } from "./load-button";
 import { UseAuthContext } from "@/context/auth-context";
+import { loginUser } from "@/services/auth";
 
-async function loginUser(email: string, password: string) {
-	const requestData = new URLSearchParams();
-	requestData.append("username", email);
-	requestData.append("password", password);
-	const res = await fetch("http://localhost:8000/api/auth/login", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
-		},
-		body: requestData,
-	});
-	//   .then(data => data.json()).catch(err => console.log(err))
-	if (res.ok) {
-		const responseData: LoginResponse = await res.json();
-		window.localStorage.setItem("refreshToken", responseData.refresh_token);
-		return [res, responseData]
-	} else {
-		console.log(res);
-	}
-	return [res, null];
-}
 
-export default function LoginForm() {
+
+const LoginForm = () => {
 	const router = useRouter();
-	const { isAuthenticated, setIsAuthenticated,accessToken,setAccessToken } = UseAuthContext();
+	const { setIsAuthenticated, setAccessToken } =
+		UseAuthContext();
 	const [userEmail, setUserEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [err, setErr] = useState("");
-	const [showPassword, setShowPassword] = useState<boolean>(false);
-	// useEffect(() => {
-	//     setErr('');
-	// }, [userEmail, password])
-	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		setErr("");
+	}, [userEmail, password]);
+	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		setIsLoading(true);
-		const [response, data] = await loginUser(userEmail, password);
-		if (response.ok) {
-			setIsLoading(false);
-			setAccessToken(data.access_token);
-			setIsAuthenticated(true);
-			router.push("/");
-		} else {
-			setIsLoading(false);
-			alert("Login Failed");
-		}
+		loginUser(userEmail, password)
+			.then((data) => {
+				setIsLoading(false);
+				setAccessToken(data.access_token);
+				setIsAuthenticated(true);
+				router.back();
+			})
+			.catch((err) => {
+				setIsLoading(false);
+				setErr(err.message);
+			});
 	};
 	return (
 		<Card className="w-fit">
@@ -104,6 +85,7 @@ export default function LoginForm() {
 								Forgot Password?
 							</Link>
 						</div>
+						{err && <p className="text-red-500 text-sm">{err}</p>}
 					</div>
 				</CardContent>
 				<CardFooter className="flex justify-between">
@@ -121,4 +103,7 @@ export default function LoginForm() {
 			</form>
 		</Card>
 	);
-}
+};
+
+export default LoginForm;
+

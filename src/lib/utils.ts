@@ -35,11 +35,12 @@ export function formatDate(dateString: string) {
 }
 
 import axios from 'axios';
+import { UseAuthContext } from "@/context/auth-context";
+import { useRouter } from "next/navigation";
 
-const axiosInstance = axios.create({
+export const api = axios.create({
     baseURL: 'http://localhost:8000/api'
 });
-
 /**
  * Fetches data from the specified URL using axios.
  *
@@ -47,10 +48,29 @@ const axiosInstance = axios.create({
  * @returns A Promise that resolves to the fetched data.
  */
 export const fetcher = async (url: string) => {
-  const response = await axiosInstance.get(url);
-  return response.data;
+  return api.get(url).then(res => res.data);
 };
 
+// api.interceptors.request.use(config => {
+//     if (token) {
+//         config.headers.Authorization = `Bearer ${token}`;
+//     }
+//     return config;
+// });
+
+export const authenticatedFetcher = async (url: string ) => {
+    const { accessToken } = UseAuthContext();
+
+
+    if (accessToken) {
+        return api.get(url, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }).then(res => res.data);
+    }
+        return false;
+};
 
 // // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 // export const poster = async (url: string, data: Record<string, any>, token: string | null = null) => {
@@ -68,4 +88,5 @@ export const fetcher = async (url: string) => {
 
 //   return axiosInstance.post(url, data, config);
 // }
-export const request = axiosInstance
+export const request = api
+export const axiosRequest = api
