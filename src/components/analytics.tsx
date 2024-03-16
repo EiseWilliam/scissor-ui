@@ -18,7 +18,7 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from "@/components/bk/card";
 import {
 	Table,
 	TableBody,
@@ -27,8 +27,8 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "@/components/bk/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/bk/tabs";
 import WMap from "@/components/world-map";
 import { ChevronLeftIcon } from "@radix-ui/react-icons";
 import useSWR from "swr";

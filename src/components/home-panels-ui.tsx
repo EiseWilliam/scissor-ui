@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/components/bk/button";
+import { Input } from "@/components/bk/input";
+import { Label } from "@/components/bk/label";
 import {
 	Card,
 	CardContent,
@@ -10,12 +10,12 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from "@/components/bk/card";
 import { useEffect, useState, useMemo, memo } from "react";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import { useCopy } from "@/lib/hooks";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/bk/skeleton";
 import useSWRImmutable from "swr";
 import { api, fetcher, request } from "@/lib/utils";
 import {
@@ -26,10 +26,10 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@/components/ui/form";
+} from "@/components/bk/form";
 import { UseAuthContext } from "@/context/auth-context";
-import { Switch } from "@/components/ui/switch";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/bk/switch";
+import { Checkbox } from "@/components/bk/checkbox";
 type urlClicks = Record<string, number>;
 
 function RecentURLs() {
@@ -135,9 +135,9 @@ export function AShortenerPanel() {
 	const [error, setError] = useState("");
 
 	const verifyCustom = (alias: string) => {
-		fetcher(`/url/verify_custom?alias=${alias}`).then((d) =>
-			setAliasAvailable(d),
-		).catch((e) => console.log(e));
+		fetcher(`/url/verify_custom?alias=${alias}`)
+			.then((d) => setAliasAvailable(d))
+			.catch((e) => console.log(e));
 	};
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
@@ -237,9 +237,9 @@ export function AuthShortenerPanel() {
 	const [error, setError] = useState("");
 
 	const verifyCustom = (alias: string) => {
-		fetcher(`/url/verify_custom?alias=${alias}`).then((d) =>
-			setAliasAvailable(d),
-		).catch(error => console.log(error));
+		fetcher(`/url/verify_custom?alias=${alias}`)
+			.then((d) => setAliasAvailable(d))
+			.catch((error) => console.log(error));
 	};
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
@@ -329,7 +329,7 @@ export function AuthShortenerPanel() {
 	);
 }
 
-export function UrlShortener() {
+export const UrlShortener = () => {
 	const { isAuthenticated, accessToken } = UseAuthContext();
 	const [isAdvanced, setIsAdvanced] = useState(false);
 	const [longUrl, setLongUrl] = useState("");
@@ -340,9 +340,9 @@ export function UrlShortener() {
 	const [newUrls, setNewUrls] = useState<string[]>([]);
 
 	const verifyCustom = (alias: string) => {
-		fetcher(`/url/verify_custom?alias=${alias}`).then((d) =>
-			setAliasAvailable(d),
-		).catch((e) => console.log(e));
+		fetcher(`/url/verify_custom?alias=${alias}`)
+			.then((d) => setAliasAvailable(d))
+			.catch((e) => console.log(e));
 	};
 
 	const config = {
@@ -393,7 +393,6 @@ export function UrlShortener() {
 		}
 	};
 
-
 	return (
 		<div className="p-8 bg-white w-full min-w-fit h-fit dark:bg-gray-800">
 			<div className="flex items-center justify-between mb-4">
@@ -429,9 +428,11 @@ export function UrlShortener() {
 							</label>
 						</div>
 						{isAdvanced && (
-							<motion.div initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							transition={{ duration: 0.9 }}>
+							<motion.div
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								transition={{ duration: 0.9 }}
+							>
 								<Label htmlFor="alias">Custom alias(Optional)</Label>
 								<div className="flex flex-row items-center">
 									<p className="text-slate-800 text-normal font-sm">
@@ -479,7 +480,7 @@ export function UrlShortener() {
 			<RecentURLs />
 		</div>
 	);
-}
+};
 
 export default function ShortenerPanel() {
 	const { isAuthenticated, accessToken, setIsAuthenticated } = UseAuthContext();
@@ -636,21 +637,21 @@ export function QRPanel() {
 						/>
 					</div>
 					<div className="flex items-center space-x-2 my-2 py-2">
-							<Checkbox
-								id="terms"
-								disabled={isAuthenticated === false}
-								checked={isAdvanced}
-								onClick={() => {
-									setIsAdvanced(!isAdvanced);
-								}}
-							/>
-							<label
-								htmlFor="terms"
-								className="text-sm text-sky-400 font-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-							>
-								Show advanced options
-							</label>
-						</div>
+						<Checkbox
+							id="terms"
+							disabled={isAuthenticated === false}
+							checked={isAdvanced}
+							onClick={() => {
+								setIsAdvanced(!isAdvanced);
+							}}
+						/>
+						<label
+							htmlFor="terms"
+							className="text-sm text-sky-400 font-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+						>
+							Show advanced options
+						</label>
+					</div>
 
 					{!isLoading ? (
 						<Button

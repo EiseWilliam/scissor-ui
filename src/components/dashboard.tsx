@@ -1,8 +1,7 @@
 "use client";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/bk/button";
 import { Link2Icon } from "@radix-ui/react-icons";
-
 
 export function DashNavMenu() {
 	return (

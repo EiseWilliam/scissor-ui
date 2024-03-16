@@ -1,12 +1,12 @@
 import { createRouter } from "@tanstack/react-router";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
-import { routeTree } from "./routeTree.gen.ts";
-import "@/styles/tailwind.css";
-import NavBar from "@/components/navbar.tsx";
+import { routeTree } from "./routeTree.gen";
+import "@/styles/global.css";
+import AuthProvider from "@/context/auth-context";
+import { RouterProvider } from "@tanstack/react-router";
 
-const router = createRouter({ routeTree });
+export const router = createRouter({ routeTree });
 
 declare module "@tanstack/react-router" {
 	interface Register {
@@ -14,14 +14,16 @@ declare module "@tanstack/react-router" {
 		router: typeof router;
 	}
 }
+type AppProps = { router: ReturnType<typeof createRouter> };
 
 const rootElement = document.querySelector("#root") as Element;
 if (!rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement);
 	root.render(
 		<React.StrictMode>
-			<NavBar />
-			<App router={router} />
+			<AuthProvider>
+				<RouterProvider router={router} />
+			</AuthProvider>
 		</React.StrictMode>,
 	);
 }

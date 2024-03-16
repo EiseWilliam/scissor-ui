@@ -1,8 +1,8 @@
 import React from "react";
 
 import { ReloadIcon } from "@radix-ui/react-icons";
-import { Button } from "@/components/ui/button";
-import { ButtonProps } from "./ui/button";
+import { Button } from "@/components/bk/button";
+import { ButtonProps } from "./bk/button";
 
 // create a show loading with state button
 export const LoadButton = (state: boolean, buttonText: string) => {

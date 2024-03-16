@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "@/components/bk/button";
+import { Card } from "@/components/bk/card";
 import { useEffect, useState } from "react";
 import { CalendarIcon, CopyIcon, PlusIcon } from "@radix-ui/react-icons";
 import { UseAuthContext } from "@/context/auth-context";
@@ -14,7 +14,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/bk/dialog";
 import {
 	Drawer,
 	DrawerClose,
@@ -24,11 +24,10 @@ import {
 	DrawerHeader,
 	DrawerTitle,
 	DrawerTrigger,
-} from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/components/bk/drawer";
+import { Input } from "@/components/bk/input";
+import { Label } from "@/components/bk/label";
 import useSWR from "swr";
-
 
 interface ShortenedUrlCardProps extends ComponentPropsWithoutRef<"div"> {
 	data: urlDetails;
@@ -39,7 +38,10 @@ export const ShortenedUrlCard: FC<ShortenedUrlCardProps> = ({
 	...props
 }) => {
 	return (
-		<Card className={cn("flex flex-row p-4 gap-10 w-full", className)} {...props}>
+		<Card
+			className={cn("flex flex-row p-4 gap-10 w-full", className)}
+			{...props}
+		>
 			<div>
 				<img
 					src={data.thumbnail}
@@ -88,8 +90,14 @@ export function MyUrls() {
 		<section className="flex flex-col w-full p-2">
 			<div className="flex flex-row justify-between items-center p-2">
 				<h1 className="text-slate-800 font-bold text-3xl">My Links</h1>
-				<Button variant="default" className=" px-4 text-white bg-blue-600  w-fit">
-					<Link className="flex flex-row items-center gap-1.5 text-sm" href="/dashboard/new">
+				<Button
+					variant="default"
+					className=" px-4 text-white bg-blue-600  w-fit"
+				>
+					<Link
+						className="flex flex-row items-center gap-1.5 text-sm"
+						href="/dashboard/new"
+					>
 						<PlusIcon className="w-6 h-6" />
 						<span className="text-xs font-medium">New</span>
 					</Link>
@@ -100,7 +108,11 @@ export function MyUrls() {
 			{!isLoading && !error && (
 				<div className="flex gap-2 flex-col">
 					{data.map((data: urlDetails) => (
-						<Link key={data.id} href={`/dashboard/${data.short_url}`} className="">
+						<Link
+							key={data.id}
+							href={`/dashboard/${data.short_url}`}
+							className=""
+						>
 							<ShortenedUrlCard data={data} />
 						</Link>
 					))}
