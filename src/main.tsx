@@ -3,7 +3,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import { routeTree } from "./routeTree.gen.ts";
-import "./styles/tailwind.css";
+import "@/styles/tailwind.css";
+import NavBar from "@/components/navbar.tsx";
 
 const router = createRouter({ routeTree });
 
@@ -19,7 +20,8 @@ if (!rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement);
 	root.render(
 		<React.StrictMode>
+			<NavBar />
 			<App router={router} />
-		</React.StrictMode>
+		</React.StrictMode>,
 	);
 }
