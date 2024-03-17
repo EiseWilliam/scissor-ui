@@ -107,7 +107,7 @@ export const MyUrls = () => {
 				</Button>
 			</div>
 			{isLoading && <p>Loading...</p>}
-			{error && <p className="text-red-400">{error.message}</p>}
+			{error && <p className="text-red-500">{error.message}</p>}
 			{!isLoading && !error && (
 				<div className="flex gap-2 flex-col">
 					{data.map((data: urlDetails) => (

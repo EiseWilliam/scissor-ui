@@ -13,24 +13,19 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as DashboardrootImport } from './routes/dashboard/__root'
 import { Route as RegisterImport } from './routes/register'
 import { Route as LoginImport } from './routes/login'
 import { Route as IndexImport } from './routes/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
 import { Route as DashboardUrlsImport } from './routes/dashboard/urls'
 import { Route as DashboardProfileImport } from './routes/dashboard/profile'
+import { Route as DashboardLayoutImport } from './routes/dashboard/_layout'
 
 // Create Virtual Routes
 
 const DashboardImport = createFileRoute('/dashboard')()
 
 // Create/Update Routes
-
-const DashboardrootRoute = DashboardrootImport.update({
-  id: '/__root',
-  getParentRoute: () => DashboardRoute,
-} as any)
 
 const DashboardRoute = DashboardImport.update({
   path: '/dashboard',
@@ -67,6 +62,11 @@ const DashboardProfileRoute = DashboardProfileImport.update({
   getParentRoute: () => DashboardRoute,
 } as any)
 
+const DashboardLayoutRoute = DashboardLayoutImport.update({
+  id: '/_layout',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -87,8 +87,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardImport
       parentRoute: typeof rootRoute
     }
-    '/dashboard/__root': {
-      preLoaderRoute: typeof DashboardrootImport
+    '/dashboard/_layout': {
+      preLoaderRoute: typeof DashboardLayoutImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/profile': {

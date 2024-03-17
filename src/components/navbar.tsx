@@ -10,7 +10,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Link, Outlet } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+
 
 const Navbar = () => {
 	const { isAuthenticated, setIsAuthenticated, setAccessToken } =
@@ -90,8 +90,6 @@ const Navbar = () => {
 				</nav>
 				{/* </motion.header> */}
 			</header>
-			<Outlet />
-			<TanStackRouterDevtools />
 		</>
 	);
 };
