@@ -40,45 +40,12 @@ import {
 } from "@/types/analytics";
 import { cn } from "@/lib/utils";
 
-const Analytics = () => {
-	const fetcher = (...args: any[]) => fetch(args[0]).then((res) => res.json());
-	const { data, error, isLoading } = useSWR<ApiReturnData>(
-		"http://localhost:8000/api/analytics/8wiCzrs",
-		fetcher,
-	);
-	return (
-		<div className="py-2 flex flex-col gap-2 w-screen ">
-			<div className="flex items-center flex-row gap-10">
-				<ChevronLeftIcon />
-				<h1 className="text-4xl font-bold">Analytics</h1>
-			</div>
-			<div className="flex flex-col gap-2 px-10 h-fit  w-full">
-				{!isLoading && !error && data && (
-					<>
-						<Overview
-							data={data.overview}
-							className="w-full h-fit text-red-600"
-						/>
-						<Timeline
-							data={data.timeline}
-							className="w-full bg-white rounded-lg shadow-md p-4"
-						/>
-						<LocationMap data={data.location} className="col-span-2" />
-						<LocationTable data={data.location} />
-						<Referrer />
-					</>
-				)}
-			</div>
-		</div>
-	);
-};
 
-export default Analytics;
 
 interface CardProps<DataType> extends React.HTMLAttributes<HTMLDivElement> {
 	data: DataType;
 }
-const Timeline: React.FC<CardProps<timelineData>> = ({ data, ...props }) => {
+export const Timeline: React.FC<CardProps<timelineData>> = ({ data, ...props }) => {
 	const options: Intl.DateTimeFormatOptions = {
 		weekday: "short",
 		year: "numeric",
@@ -149,7 +116,7 @@ export const Overview: React.FC<CardProps<overviewData>> = ({
 	);
 };
 
-const LocationMap: React.FC<CardProps<locationData>> = ({ data, ...props }) => {
+export const LocationMap: React.FC<CardProps<locationData>> = ({ data, ...props }) => {
 	return (
 		<Card {...props} className="col-span-2">
 			<CardHeader>
@@ -167,7 +134,7 @@ const LocationMap: React.FC<CardProps<locationData>> = ({ data, ...props }) => {
 	);
 };
 
-const LocationTable: React.FC<CardProps<locationData>> = ({
+export const LocationTable: React.FC<CardProps<locationData>> = ({
 	data,
 	className,
 }) => {
@@ -187,7 +154,7 @@ const LocationTable: React.FC<CardProps<locationData>> = ({
 	);
 };
 
-const CountriesTable: React.FC<{ data: dict }> = ({ data }) => {
+export const CountriesTable: React.FC<{ data: dict }> = ({ data }) => {
 	return (
 		<Table>
 			<TableCaption>Countries by Visit</TableCaption>
@@ -208,7 +175,7 @@ const CountriesTable: React.FC<{ data: dict }> = ({ data }) => {
 		</Table>
 	);
 };
-const CitiesTable: React.FC<{ data: dict }> = ({ data }) => {
+export const CitiesTable: React.FC<{ data: dict }> = ({ data }) => {
 	return (
 		<Table>
 			<TableCaption>Cities by Visit</TableCaption>
@@ -245,7 +212,7 @@ const data: DataPoint[] = [
 	{ name: "Other", value: 2 },
 ];
 
-const Referrer: React.FC = () => {
+export const Referrer: React.FC = () => {
 	return (
 		<div className="bg-white rounded-lg shadow-md p-4">
 			<h2 className="text-xl font-bold mb-4">Clicks + scans by referrer</h2>

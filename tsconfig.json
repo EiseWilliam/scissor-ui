@@ -34,7 +34,8 @@
 		"noUncheckedIndexedAccess": true
 	},
 	"include": [
-		"src"
+		"src",
+		"src/routes/dashboard/_layout.urls.ts"
 	],
 	"references": [
 		{

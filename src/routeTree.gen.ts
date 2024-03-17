@@ -16,10 +16,12 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as RegisterImport } from './routes/register'
 import { Route as LoginImport } from './routes/login'
 import { Route as IndexImport } from './routes/index'
-import { Route as DashboardIndexImport } from './routes/dashboard/index'
-import { Route as DashboardUrlsImport } from './routes/dashboard/urls'
-import { Route as DashboardProfileImport } from './routes/dashboard/profile'
 import { Route as DashboardLayoutImport } from './routes/dashboard/_layout'
+import { Route as DashboardLayoutIndexImport } from './routes/dashboard/_layout.index'
+import { Route as DashboardLayoutUrlsImport } from './routes/dashboard/_layout.urls'
+import { Route as DashboardLayoutProfileImport } from './routes/dashboard/_layout.profile'
+import { Route as DashboardLayoutUrlsShortUrlImport } from './routes/dashboard/_layout.urls.$shortUrl'
+import { Route as DashboardLayoutAnalyticsShortUrlImport } from './routes/dashboard/_layout.analytics.$shortUrl'
 
 // Create Virtual Routes
 
@@ -47,25 +49,37 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const DashboardIndexRoute = DashboardIndexImport.update({
-  path: '/',
-  getParentRoute: () => DashboardRoute,
-} as any)
-
-const DashboardUrlsRoute = DashboardUrlsImport.update({
-  path: '/urls',
-  getParentRoute: () => DashboardRoute,
-} as any)
-
-const DashboardProfileRoute = DashboardProfileImport.update({
-  path: '/profile',
-  getParentRoute: () => DashboardRoute,
-} as any)
-
 const DashboardLayoutRoute = DashboardLayoutImport.update({
   id: '/_layout',
   getParentRoute: () => DashboardRoute,
 } as any)
+
+const DashboardLayoutIndexRoute = DashboardLayoutIndexImport.update({
+  path: '/',
+  getParentRoute: () => DashboardLayoutRoute,
+} as any)
+
+const DashboardLayoutUrlsRoute = DashboardLayoutUrlsImport.update({
+  path: '/urls',
+  getParentRoute: () => DashboardLayoutRoute,
+} as any)
+
+const DashboardLayoutProfileRoute = DashboardLayoutProfileImport.update({
+  path: '/profile',
+  getParentRoute: () => DashboardLayoutRoute,
+} as any)
+
+const DashboardLayoutUrlsShortUrlRoute =
+  DashboardLayoutUrlsShortUrlImport.update({
+    path: '/$shortUrl',
+    getParentRoute: () => DashboardLayoutUrlsRoute,
+  } as any)
+
+const DashboardLayoutAnalyticsShortUrlRoute =
+  DashboardLayoutAnalyticsShortUrlImport.update({
+    path: '/analytics/$shortUrl',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -91,17 +105,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutImport
       parentRoute: typeof DashboardRoute
     }
-    '/dashboard/profile': {
-      preLoaderRoute: typeof DashboardProfileImport
-      parentRoute: typeof DashboardImport
+    '/dashboard/_layout/profile': {
+      preLoaderRoute: typeof DashboardLayoutProfileImport
+      parentRoute: typeof DashboardLayoutImport
     }
-    '/dashboard/urls': {
-      preLoaderRoute: typeof DashboardUrlsImport
-      parentRoute: typeof DashboardImport
+    '/dashboard/_layout/urls': {
+      preLoaderRoute: typeof DashboardLayoutUrlsImport
+      parentRoute: typeof DashboardLayoutImport
     }
-    '/dashboard/': {
-      preLoaderRoute: typeof DashboardIndexImport
-      parentRoute: typeof DashboardImport
+    '/dashboard/_layout/': {
+      preLoaderRoute: typeof DashboardLayoutIndexImport
+      parentRoute: typeof DashboardLayoutImport
+    }
+    '/dashboard/_layout/analytics/$shortUrl': {
+      preLoaderRoute: typeof DashboardLayoutAnalyticsShortUrlImport
+      parentRoute: typeof DashboardLayoutImport
+    }
+    '/dashboard/_layout/urls/$shortUrl': {
+      preLoaderRoute: typeof DashboardLayoutUrlsShortUrlImport
+      parentRoute: typeof DashboardLayoutUrlsImport
     }
   }
 }
@@ -113,9 +135,12 @@ export const routeTree = rootRoute.addChildren([
   LoginRoute,
   RegisterRoute,
   DashboardRoute.addChildren([
-    DashboardProfileRoute,
-    DashboardUrlsRoute,
-    DashboardIndexRoute,
+    DashboardLayoutRoute.addChildren([
+      DashboardLayoutProfileRoute,
+      DashboardLayoutUrlsRoute.addChildren([DashboardLayoutUrlsShortUrlRoute]),
+      DashboardLayoutIndexRoute,
+      DashboardLayoutAnalyticsShortUrlRoute,
+    ]),
   ]),
 ])
 

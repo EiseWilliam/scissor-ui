@@ -1,4 +1,4 @@
-"use client";
+
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Link2Icon } from "@radix-ui/react-icons";
@@ -11,7 +11,7 @@ export function DashNavMenu() {
 					variant="link"
 					className="w-fit p-0 text-black hover:text-blue-600"
 				>
-					<Link className="flex flex-row items-center gap-1.5 text-sm" href="#">
+					<Link className="flex flex-row items-center gap-1.5 text-sm [&.active]:font-bold"  to="/dashboard/urls">
 						<Link2Icon className="w-6 h-6" />
 						<span className="text-xs font-medium">My Urls</span>
 					</Link>
@@ -21,7 +21,7 @@ export function DashNavMenu() {
 					className="w-fit p-0 text-black hover:text-blue-600 "
 				>
 					<Link
-						className="flex flex-row items-center gap-1.5 text-sm"
+						className="flex flex-row items-center gap-1.5 text-sm [&.active]:font-bold"
 						href="/dashboard/analytics"
 					>
 						<BarChart2Icon className="w-6 h-6" />
@@ -32,16 +32,16 @@ export function DashNavMenu() {
 					variant="link"
 					className="w-fit p-0 text-black hover:text-blue-600 "
 				>
-					<Link className="flex flex-row items-center gap-1.5 text-sm" href="#">
+					<Link className="flex flex-row items-center gap-1.5 text-sm [&.active]:font-bold" to="/dashboard/profile">
 						<UsersIcon className="w-6 h-6" />
-						<span className="text-xs font-medium">Customers</span>
+						<span className="text-xs font-medium">Profile</span>
 					</Link>
 				</Button>
 				<Button
 					variant="link"
 					className="w-fit p-0 text-black hover:text-blue-600 "
 				>
-					<Link className="flex flex-row items-center gap-1.5 text-sm" href="#">
+					<Link className="flex flex-row items-center gap-1.5 text-sm [&.active]:font-bold" href="#">
 						<SettingsIcon className="w-6 h-6" />
 						<span className="text-xs font-medium">Settings</span>
 					</Link>

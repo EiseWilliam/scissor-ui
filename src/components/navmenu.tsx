@@ -20,7 +20,7 @@ export function MidNavMenu() {
 		<NavigationMenu>
 			<NavigationMenuList>
 				<NavigationMenuItem>
-					<Link to="/dashboard">
+					<Link to="/dashboard/urls">
 						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
 							My Urls
 						</NavigationMenuLink>

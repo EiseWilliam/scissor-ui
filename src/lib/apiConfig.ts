@@ -5,4 +5,5 @@ export const endpoints = {
     posts: '/posts',
     comments: '/comments',
     urls: '/url/my_urls',
+    analytics: '/analytics',
 };

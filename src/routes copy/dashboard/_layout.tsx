@@ -11,7 +11,6 @@
 // 	},
 // });
 // import Navbar from "@/components/navbar";
-import { DashNavMenu } from "@/components/dashboard";
 import { Outlet, createRootRoute } from "@tanstack/react-router";
 // import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 // export const Route = createRootRoute({
@@ -30,14 +29,14 @@ import { Outlet, createRootRoute } from "@tanstack/react-router";
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/dashboard/_layout')({
-  component: DashboardLayout,
+  component: LayoutComponent,
 })
 
-function DashboardLayout() {
+function LayoutComponent() {
   return (
-    <main className="flex flex-row">
-    <DashNavMenu />
-    <Outlet />
-  </main>
+    <div>
+      <h1>Layout</h1>
+      <Outlet />
+    </div>
   )
 }
