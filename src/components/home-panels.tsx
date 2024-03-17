@@ -1,35 +1,24 @@
 "use client";
 
-import { Button } from "@/components/bk/button";
-import { Input } from "@/components/bk/input";
-import { Label } from "@/components/bk/label";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
 	Card,
 	CardContent,
-	CardDescription,
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "@/components/bk/card";
-import { useEffect, useState, useMemo, memo } from "react";
+} from "@/components/ui/card";
+import { useEffect, useState, memo, FC } from "react";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import { useCopy } from "@/lib/hooks";
-import { Skeleton } from "@/components/bk/skeleton";
-import useSWRImmutable from "swr";
+import { Skeleton } from "@/components/ui/skeleton";
 import { api, fetcher, request } from "@/lib/utils";
-import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/bk/form";
 import { UseAuthContext } from "@/context/auth-context";
-import { Switch } from "@/components/bk/switch";
-import { Checkbox } from "@/components/bk/checkbox";
+import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 type urlClicks = Record<string, number>;
 
 function RecentURLs() {
@@ -42,7 +31,7 @@ function RecentURLs() {
 	useEffect(() => {
 		const storedUrls = localStorage.getItem("myShortUrls");
 		if (storedUrls) {
-			const storedData = JSON.parse(storedUrls);
+			const storedData: string[] = JSON.parse(storedUrls) as string[];
 			const lastThreeUrls = storedData.slice(-3);
 			fetch("http://localhost:8000/api/url/stats", {
 				method: "POST",
@@ -329,159 +318,6 @@ export function AuthShortenerPanel() {
 	);
 }
 
-export const UrlShortener = () => {
-	const { isAuthenticated, accessToken } = UseAuthContext();
-	const [isAdvanced, setIsAdvanced] = useState(false);
-	const [longUrl, setLongUrl] = useState("");
-	const [alias, setAlias] = useState("");
-	const [aliasAvailable, setAliasAvailable] = useState(null);
-	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState("");
-	const [newUrls, setNewUrls] = useState<string[]>([]);
-
-	const verifyCustom = (alias: string) => {
-		fetcher(`/url/verify_custom?alias=${alias}`)
-			.then((d) => setAliasAvailable(d))
-			.catch((e) => console.log(e));
-	};
-
-	const config = {
-		headers: {
-			Authorization: `Bearer ${accessToken}`,
-		},
-	};
-
-	const handleAdvancedToggle = () => {
-		setIsAdvanced(!isAdvanced);
-	};
-
-	const handleSubmit = async (e) => {
-		e.preventDefault();
-		if (!longUrl.trim()) {
-			setError("Please enter a valid URL");
-			return;
-		}
-		setIsLoading(true);
-
-		try {
-			if (isAdvanced) {
-				const res = api.post(
-					"/url/shorten",
-					{ url: longUrl, custom_alias: alias },
-					config,
-				);
-				if (res.status === 200) {
-					// ... handle successful advanced shortening
-				} else {
-					setError(res.data);
-				}
-			} else {
-				const res = await fetch(
-					`http://localhost:8000/api/url/quick_shorten?url=${longUrl}`,
-				);
-				if (res.ok) {
-					const data = await res.json();
-					// addValueToArray(data); // ... handle successful simple shortening
-				} else {
-					setError(res.status.toString());
-				}
-			}
-		} catch (error) {
-			setError(error.message);
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	return (
-		<div className="p-8 bg-white w-full min-w-fit h-fit dark:bg-gray-800">
-			<div className="flex items-center justify-between mb-4">
-				<h2 className="text-lg font-medium text-gray-900 dark:text-white">
-					URL Shortener
-				</h2>
-			</div>
-			<div className="flex flex-col items-center justify-center h-full">
-				<div className="w-full max-w-md">
-					<form className="rounded-md shadow-sm" onSubmit={handleSubmit}>
-						<Label htmlFor="long-url">URL</Label>
-						<Input
-							id="long-url"
-							type="url"
-							placeholder={error ? error : "Paste long URL here..."}
-							value={longUrl}
-							onChange={(e) => setLongUrl(e.target.value)}
-						/>
-						<div className="flex items-center space-x-2 my-2 py-2">
-							<Checkbox
-								id="terms"
-								disabled={isAuthenticated === false}
-								checked={isAdvanced}
-								onClick={() => {
-									setIsAdvanced(!isAdvanced);
-								}}
-							/>
-							<label
-								htmlFor="terms"
-								className="text-sm text-sky-400 font-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-							>
-								Show advanced options
-							</label>
-						</div>
-						{isAdvanced && (
-							<motion.div
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 1 }}
-								transition={{ duration: 0.9 }}
-							>
-								<Label htmlFor="alias">Custom alias(Optional)</Label>
-								<div className="flex flex-row items-center">
-									<p className="text-slate-800 text-normal font-sm">
-										localhost:8000/
-									</p>
-									<span className="inline-flex flex-col w-full pl-1">
-										<Input
-											id="alias"
-											type="text"
-											placeholder={error ? error : "Set a Custom Alias"}
-											value={alias}
-											className="w-full"
-											onChange={(e) => {
-												setAliasAvailable(null);
-												setAlias(e.target.value);
-											}}
-										/>
-										<AliasFeedback isAvailable={aliasAvailable} />
-									</span>
-								</div>
-							</motion.div>
-						)}
-						{!isLoading ? (
-							<Button
-								className="w-full py-2 mt-4 rounded-b-md"
-								type="submit"
-								variant="default"
-								disabled={isAdvanced && aliasAvailable === false}
-							>
-								Trim Url
-							</Button>
-						) : (
-							<Button
-								className="w-full py-2 mt-4 rounded-b-md"
-								type="submit"
-								variant="default"
-								disabled={isAdvanced && aliasAvailable === false}
-							>
-								Trim Url
-							</Button>
-						)}
-					</form>
-				</div>
-			</div>
-			<RecentURLs />
-		</div>
-	);
-};
-
 export default function ShortenerPanel() {
 	const { isAuthenticated, accessToken, setIsAuthenticated } = UseAuthContext();
 	const [newUrls, setNewUrls] = useState<string[]>([]);
@@ -636,22 +472,10 @@ export function QRPanel() {
 							onChange={(e) => setUrl(e.target.value)}
 						/>
 					</div>
-					<div className="flex items-center space-x-2 my-2 py-2">
-						<Checkbox
-							id="terms"
-							disabled={isAuthenticated === false}
-							checked={isAdvanced}
-							onClick={() => {
-								setIsAdvanced(!isAdvanced);
-							}}
-						/>
-						<label
-							htmlFor="terms"
-							className="text-sm text-sky-400 font-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-						>
-							Show advanced options
-						</label>
-					</div>
+					<IsAdvancedCheckbox
+						isAdvanced={isAdvanced}
+						setIsAdvanced={setIsAdvanced}
+					/>
 
 					{!isLoading ? (
 						<Button
@@ -682,3 +506,172 @@ export function QRPanel() {
 		</Card>
 	);
 }
+
+const IsAdvancedCheckbox: FC<{
+	isAdvanced: boolean;
+	setIsAdvanced: (arg0: boolean) => void;
+}> = ({ isAdvanced, setIsAdvanced }) => {
+	const { isAuthenticated } = UseAuthContext();
+	const [showWarning, setShowWarning] = useState(false); // State to manage warning
+
+	const toggle = () => {
+		if (!isAuthenticated) {
+			setShowWarning(true);
+		} else {
+			setIsAdvanced(!isAdvanced);
+		}
+	};
+	return (
+		<div className="flex flex-col items-start space-x-2 my-2 py-2">
+			<div className="flex items-center gap-2">
+				<Checkbox id="terms" checked={isAdvanced} onClick={toggle} />
+				<label
+					htmlFor="terms"
+					className="text-sm text-slate-600 font-sm leading-none"
+				>
+					Show advanced options
+				</label>
+			</div>
+			{showWarning && (
+				<motion.p 
+				
+				className="text-xs text-red-500">login to use advanced options</motion.p>
+			)}
+		</div>
+	);
+};
+
+export const UrlShortener = () => {
+	const { accessToken } = UseAuthContext();
+	const [longUrl, setLongUrl] = useState("");
+	const [alias, setAlias] = useState("");
+	const [aliasAvailable, setAliasAvailable] = useState(null);
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState("");
+	const [newUrls, setNewUrls] = useState<string[]>([]);
+	const [isAdvanced, setIsAdvanced] = useState(false);
+
+	const verifyCustom = (alias: string) => {
+		fetcher(`/url/verify_custom?alias=${alias}`)
+			.then((d) => setAliasAvailable(d))
+			.catch((e) => console.log(e));
+	};
+
+	const config = {
+		headers: {
+			Authorization: `Bearer ${accessToken}`,
+		},
+	};
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		if (!longUrl.trim()) {
+			setError("Please enter a valid URL");
+			return;
+		}
+		setIsLoading(true);
+
+		try {
+			if (isAdvanced) {
+				const res = api.post(
+					"/url/shorten",
+					{ url: longUrl, custom_alias: alias },
+					config,
+				);
+				if (res.status === 200) {
+					// ... handle successful advanced shortening
+				} else {
+					setError(res.data);
+				}
+			} else {
+				const res = await fetch(
+					`http://localhost:8000/api/url/quick_shorten?url=${longUrl}`,
+				);
+				if (res.ok) {
+					const data = await res.json();
+					// addValueToArray(data); // ... handle successful simple shortening
+				} else {
+					setError(res.status.toString());
+				}
+			}
+		} catch (error) {
+			setError(error.message);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	return (
+		<Card className="w-full">
+			<CardHeader>
+				<CardTitle>URL Shortener</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<form className="rounded-md shadow-sm" onSubmit={handleSubmit}>
+					<Label htmlFor="long-url">URL</Label>
+					<Input
+						id="long-url"
+						type="url"
+						placeholder={error ? error : "Paste long URL here..."}
+						value={longUrl}
+						onChange={(e) => setLongUrl(e.target.value)}
+					/>
+					<IsAdvancedCheckbox
+						isAdvanced={isAdvanced}
+						setIsAdvanced={setIsAdvanced}
+					/>
+					{isAdvanced && (
+						<motion.div
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							transition={{ duration: 0.9 }}
+						>
+							<Label htmlFor="alias">Custom alias(Optional)</Label>
+							<div className="flex flex-row items-center">
+								<p className="text-slate-800 text-normal font-sm">
+									localhost:8000/
+								</p>
+								<span className="inline-flex flex-col w-full pl-1">
+									<Input
+										id="alias"
+										type="text"
+										placeholder={error ? error : "Set a Custom Alias"}
+										value={alias}
+										className="w-full"
+										onChange={(e) => {
+											setAliasAvailable(null);
+											setAlias(e.target.value);
+										}}
+									/>
+									<AliasFeedback isAvailable={aliasAvailable} />
+								</span>
+							</div>
+						</motion.div>
+					)}
+					{!isLoading ? (
+						<Button
+							className="w-full py-2 mt-4 rounded-b-md"
+							type="submit"
+							variant="default"
+							disabled={isAdvanced && aliasAvailable === false}
+						>
+							Trim Url
+						</Button>
+					) : (
+						<Button
+							className="w-full py-2 mt-4 rounded-b-md"
+							type="submit"
+							variant="default"
+							disabled={isAdvanced && aliasAvailable === false}
+						>
+							Trim Url
+						</Button>
+					)}
+				</form>
+			</CardContent>
+			<CardFooter className="flex items-center justify-center">
+				<RecentURLs />
+			</CardFooter>
+		</Card>
+	);
+};

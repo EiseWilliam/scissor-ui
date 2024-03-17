@@ -1,10 +1,10 @@
 "use client";
 
-import { Label } from "@/components/bk/label";
-import { Input } from "@/components/bk/input";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { ReloadIcon } from "@radix-ui/react-icons";
-import { Button } from "@/components/bk/button";
-import { Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { Link, useRouter } from "@tanstack/react-router";
 import {
 	CardFooter,
 	Card,
@@ -12,8 +12,8 @@ import {
 	CardTitle,
 	CardDescription,
 	CardContent,
-} from "./bk/card";
-import { FormEvent, useEffect, useState } from "react";
+} from "../ui/card";
+import { type FormEvent, useEffect, useState } from "react";
 import { UseAuthContext } from "@/context/auth-context";
 import { loginUser } from "@/services/auth";
 
@@ -37,7 +37,7 @@ const LoginForm = () => {
 				setIsLoading(false);
 				setAccessToken(data.access_token);
 				setIsAuthenticated(true);
-				router.back();
+				router.history.back();
 			})
 			.catch((err) => {
 				setIsLoading(false);

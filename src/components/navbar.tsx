@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { LogOutIcon, Logo } from "@/components/icons";
 import { MidNavMenu } from "./navmenu";
 import { UseAuthContext } from "@/context/auth-context";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/bk/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/components/bk/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { Link, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 

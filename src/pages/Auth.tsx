@@ -1,15 +1,13 @@
-import React, { useState } from "react";
-import RegisterForm from "@/components/signup";
+import React, { type FC, useState } from "react";
+import RegisterForm from "@/components/forms/signup";
 import { RegisterVector } from "@/components/background-vectors";
-import LoginForm from "@/components/login";
-import { Button } from "@/components/bk/button";
+import LoginForm from "@/components/forms/login";
+import { Button } from "@/components/ui/button";
 
-const RegisterPage = () => {
-	// const router = useRouter();
-	const [isSignupForm, setIsSignupForm] = useState(true);
+const AuthPage: FC<boolean> = (isSignUp: boolean) => {
+	const [isSignupForm, setIsSignupForm] = useState(isSignUp);
 	const handleFormChange = () => {
 		setIsSignupForm(!isSignupForm);
-		// router.push(isSignupForm ? "/register" : "/login");
 	};
 	return (
 		<div className="flex flex-row items-center justify-center min-h-screen bg-white dark:bg-gray-900">
@@ -28,4 +26,4 @@ const RegisterPage = () => {
 	);
 };
 
-export default RegisterPage;
+export default AuthPage;

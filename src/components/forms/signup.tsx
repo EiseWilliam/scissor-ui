@@ -1,6 +1,6 @@
-import { Label } from "@/components/bk/label";
-import { Input } from "@/components/bk/input";
-import { Button } from "@/components/bk/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -8,11 +8,8 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "@/components/bk/card";
-import { request } from "@/lib/utils";
-import { FormEvent, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { UseAuthContext } from "@/context/auth-context";
+} from "@/components/ui/card";
+import { useEffect } from "react";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { useRegisterAndLogin } from "@/services/auth";
 

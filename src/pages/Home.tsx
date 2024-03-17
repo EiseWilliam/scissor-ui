@@ -1,7 +1,7 @@
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/bk/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import type { FunctionComponent } from "@/lib/types";
 import { Link2Icon } from "@radix-ui/react-icons";
-import { QRPanel, UrlShortener } from "@/components/home-panels-ui";
+import { QRPanel, UrlShortener } from "@/components/home-panels";
 import { ShortenLinkVector } from "@/components/background-vectors";
 
 export const Home = (): FunctionComponent => {

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Button } from "@/components/bk/button";
-import { Card } from "@/components/bk/card";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { CalendarIcon, CopyIcon, PlusIcon } from "@radix-ui/react-icons";
 import { UseAuthContext } from "@/context/auth-context";
@@ -14,7 +14,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@/components/bk/dialog";
+} from "@/components/ui/dialog";
 import {
 	Drawer,
 	DrawerClose,
@@ -24,9 +24,9 @@ import {
 	DrawerHeader,
 	DrawerTitle,
 	DrawerTrigger,
-} from "@/components/bk/drawer";
-import { Input } from "@/components/bk/input";
-import { Label } from "@/components/bk/label";
+} from "@/components/ui/drawer";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import useSWR from "swr";
 
 interface ShortenedUrlCardProps extends ComponentPropsWithoutRef<"div"> {

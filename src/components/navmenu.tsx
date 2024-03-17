@@ -13,7 +13,7 @@ import {
 	NavigationMenuList,
 	NavigationMenuTrigger,
 	navigationMenuTriggerStyle,
-} from "@/components/bk/navigation-menu";
+} from "@/components/ui/navigation-menu";
 
 export function MidNavMenu() {
 	return (
