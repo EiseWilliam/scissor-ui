@@ -1,11 +1,11 @@
 "use client";
-import Link from "next/link";
+import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Link2Icon } from "@radix-ui/react-icons";
 
 export function DashNavMenu() {
 	return (
-		<div className="flex flex-col w-fit h-screen border-r hidden bg-gray-100/40 lg:block dark:bg-gray-800/40 pr-10">
+		<div className="flex flex-col w-fit h-screen border-r bg-gray-100/40 lg:block dark:bg-gray-800/40 pr-10">
 			<nav className="flex-1 flex flex-col items-start py-4 justify-start gap-1 px-10 text-sm">
 				<Button
 					variant="link"

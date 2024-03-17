@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
@@ -6,7 +6,7 @@ import { CalendarIcon, CopyIcon, PlusIcon } from "@radix-ui/react-icons";
 import { UseAuthContext } from "@/context/auth-context";
 import { urlDetails } from "@/lib/types";
 import { authenticatedFetcher, axiosRequest, formatDate } from "@/lib/utils";
-import React, { FC, ComponentPropsWithoutRef } from "react";
+import React, { type FC, type ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
 import {
 	Dialog,
@@ -27,7 +27,8 @@ import {
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import useSWR from "swr";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchUrls } from "@/services/query";
 
 interface ShortenedUrlCardProps extends ComponentPropsWithoutRef<"div"> {
 	data: urlDetails;
@@ -82,10 +83,12 @@ export const ShortenedUrlCard: FC<ShortenedUrlCardProps> = ({
 	);
 };
 
-export function MyUrls() {
-	const { isAuthenticated, accessToken, setIsAuthenticated } = UseAuthContext();
-	const url = "/url/my_urls";
-	const { data, error, isLoading } = useSWR(url, authenticatedFetcher);
+export const MyUrls = () => {
+	const { accessToken } = UseAuthContext();
+	const { data, error, isLoading } = useQuery({
+		queryKey: ['urls', accessToken],
+		queryFn: () => fetchUrls(accessToken),
+	});
 	return (
 		<section className="flex flex-col w-full p-2">
 			<div className="flex flex-row justify-between items-center p-2">
@@ -104,7 +107,7 @@ export function MyUrls() {
 				</Button>
 			</div>
 			{isLoading && <p>Loading...</p>}
-			{error && <p>Error: {error.message}</p>}
+			{error && <p className="text-red-400">{error.message}</p>}
 			{!isLoading && !error && (
 				<div className="flex gap-2 flex-col">
 					{data.map((data: urlDetails) => (

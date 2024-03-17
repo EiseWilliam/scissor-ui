@@ -5,6 +5,7 @@ import { routeTree } from "./routeTree.gen";
 import "@/styles/tailwind.css";
 import AuthProvider from "@/context/auth-context";
 import { RouterProvider } from "@tanstack/react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export const router = createRouter({ routeTree });
 
@@ -15,15 +16,17 @@ declare module "@tanstack/react-router" {
 	}
 }
 type AppProps = { router: ReturnType<typeof createRouter> };
-
+const queryClient = new QueryClient();
 const rootElement = document.querySelector("#root") as Element;
 if (!rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement);
 	root.render(
 		<React.StrictMode>
-			<AuthProvider>
-				<RouterProvider router={router} />
-			</AuthProvider>
+			<QueryClientProvider client={queryClient}>
+				<AuthProvider>
+					<RouterProvider router={router} />
+				</AuthProvider>
+			</QueryClientProvider>
 		</React.StrictMode>,
 	);
 }

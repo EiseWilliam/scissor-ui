@@ -27,6 +27,7 @@ dist-ssr
 /playwright-report/
 /playwright/.cache/
 
+.gitpod.yml
 # storybook
 storybook-static
 
