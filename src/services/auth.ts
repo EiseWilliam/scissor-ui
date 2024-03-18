@@ -65,7 +65,7 @@ export const useRegisterAndLogin = () => {
 						setIsLoading(false);
 						setAccessToken(data.access_token);
 						setIsAuthenticated(true);
-						router.back();
+						router.history.back();
 					})
 					.catch((err) => {
 						setIsLoading(false);
