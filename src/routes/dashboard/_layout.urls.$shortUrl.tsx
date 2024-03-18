@@ -1,6 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { UrlsListPage } from '@/pages/UserList';
+import { UrlsDetailsPage } from '@/pages/UrlDetails';
 
 export const Route = createFileRoute('/dashboard/_layout/urls/$shortUrl')({
-  component: UrlsListPage
+  component: () => {
+    const { shortUrl } = Route.useParams();
+    return <UrlsDetailsPage shortUrl={shortUrl} />
+  }
 })

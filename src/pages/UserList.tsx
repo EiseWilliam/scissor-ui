@@ -23,7 +23,7 @@ export const UrlsListPage = () => {
 				>
 					<Link
 						className="flex flex-row items-center gap-1.5 text-sm"
-						href="/dashboard/new"
+						to="/dashboard/new"
 					>
 						<PlusIcon className="w-6 h-6" />
 						<span className="text-xs font-medium">New</span>

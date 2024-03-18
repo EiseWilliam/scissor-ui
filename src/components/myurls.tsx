@@ -1,11 +1,8 @@
-import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useEffect, useState } from "react";
-import { CalendarIcon, CopyIcon, PlusIcon } from "@radix-ui/react-icons";
-import { UseAuthContext } from "@/context/auth-context";
-import { urlDetails } from "@/lib/types";
-import { authenticatedFetcher, axiosRequest, formatDate } from "@/lib/utils";
+import { CalendarIcon, CopyIcon } from "@radix-ui/react-icons";
+import type { urlDetails } from "@/lib/types";
+import { formatDate } from "@/lib/utils";
 import React, { type FC, type ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
 import {
@@ -27,8 +24,6 @@ import {
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchUrls } from "@/services/query";
 
 interface ShortenedUrlCardProps extends ComponentPropsWithoutRef<"div"> {
 	data: urlDetails;
@@ -83,9 +78,7 @@ export const ShortenedUrlCard: FC<ShortenedUrlCardProps> = ({
 	);
 };
 
-
-
-export function EditButton({ currentData }) {
+export const EditButton: React.FC<{currentData: urlDetails}> = (currentData) => {
 	const [open, setOpen] = React.useState(false);
 	const isDesktop = true;
 
@@ -132,7 +125,7 @@ export function EditButton({ currentData }) {
 			</DrawerContent>
 		</Drawer>
 	);
-}
+};
 
 function ProfileForm({
 	className,

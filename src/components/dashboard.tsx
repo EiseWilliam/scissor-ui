@@ -34,7 +34,7 @@ export function DashNavMenu() {
 				>
 					<Link className="flex flex-row items-center gap-1.5 text-sm [&.active]:font-bold" to="/dashboard/profile">
 						<UsersIcon className="w-6 h-6" />
-						<span className="text-xs font-medium">Profile</span>
+						<span className="text-xs font-medium">Settings</span>
 					</Link>
 				</Button>
 				<Button
