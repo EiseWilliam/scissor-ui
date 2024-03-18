@@ -9,9 +9,15 @@ export function DashNavMenu() {
 			<nav className="flex-1 flex flex-col items-start py-4 justify-start gap-1 px-10 text-sm">
 				<Button
 					variant="link"
-					className="w-fit p-0 text-black hover:text-blue-600"
+					className="w-fit p-0 text-black hover:text-blue-600 text"
 				>
-					<Link className="flex flex-row items-center gap-1.5 text-sm [&.active]:font-bold"  to="/dashboard/urls">
+					<Link
+						className="flex flex-row items-center gap-1.5 text-sm"
+						to="/dashboard/urls"
+						activeProps={{
+							className: "font-bold text-blue-600",
+						}}
+					>
 						<Link2Icon className="w-6 h-6" />
 						<span className="text-xs font-medium">My Urls</span>
 					</Link>
@@ -23,6 +29,9 @@ export function DashNavMenu() {
 					<Link
 						className="flex flex-row items-center gap-1.5 text-sm [&.active]:font-bold"
 						href="/dashboard/analytics"
+							activeProps={{
+							className: "font-bold text-blue-600",
+						}}
 					>
 						<BarChart2Icon className="w-6 h-6" />
 						<span className="text-xs font-medium">Analytics</span>
@@ -32,7 +41,13 @@ export function DashNavMenu() {
 					variant="link"
 					className="w-fit p-0 text-black hover:text-blue-600 "
 				>
-					<Link className="flex flex-row items-center gap-1.5 text-sm [&.active]:font-bold" to="/dashboard/profile">
+					<Link
+						className="flex flex-row items-center gap-1.5 text-sm [&.active]:font-bold"
+						to="/dashboard/profile"
+							activeProps={{
+							className: "font-bold text-blue-600",
+						}}
+					>
 						<UsersIcon className="w-6 h-6" />
 						<span className="text-xs font-medium">Settings</span>
 					</Link>
@@ -41,7 +56,13 @@ export function DashNavMenu() {
 					variant="link"
 					className="w-fit p-0 text-black hover:text-blue-600 "
 				>
-					<Link className="flex flex-row items-center gap-1.5 text-sm [&.active]:font-bold" href="#">
+					<Link
+						className="flex flex-row items-center gap-1.5 text-sm [&.active]:font-bold"
+						href="#"
+							activeProps={{
+							className: "font-bold text-blue-600",
+						}}
+					>
 						<SettingsIcon className="w-6 h-6" />
 						<span className="text-xs font-medium">Settings</span>
 					</Link>

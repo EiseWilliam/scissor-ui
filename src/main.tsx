@@ -3,11 +3,14 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { routeTree } from "./routeTree.gen";
 import "@/styles/tailwind.css";
-import AuthProvider from "@/context/auth-context";
+import AuthProvider, { UseAuthContext } from "@/context/auth-context";
 import { RouterProvider } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-export const router = createRouter({ routeTree });
+export const router = createRouter({ routeTree,  defaultPreload: 'intent',
+  context: {
+    auth: undefined!, // This will be set after we wrap the app in an AuthProvider
+  }, });
 
 declare module "@tanstack/react-router" {
 	interface Register {
@@ -17,6 +20,12 @@ declare module "@tanstack/react-router" {
 }
 type AppProps = { router: ReturnType<typeof createRouter> };
 const queryClient = new QueryClient();
+
+function InnerApp() {
+  const auth = UseAuthContext()
+  return <RouterProvider router={router} context={{ auth }} />
+}
+
 const rootElement = document.querySelector("#root") as Element;
 if (!rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement);
@@ -24,7 +33,7 @@ if (!rootElement.innerHTML) {
 		<React.StrictMode>
 			<QueryClientProvider client={queryClient}>
 				<AuthProvider>
-					<RouterProvider router={router} />
+					<InnerApp />
 				</AuthProvider>
 			</QueryClientProvider>
 		</React.StrictMode>,
