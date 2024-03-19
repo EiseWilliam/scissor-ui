@@ -5,15 +5,17 @@ import { UseAuthContext } from "@/context/auth-context";
 import { fetchUrlDetails, fetchUrls } from "@/services/query";
 import type { overviewData } from "@/types/analytics";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
+import type { FC } from "react";
 
-export const UrlsDetailsPage:FC<{shortUrl: string}> = ({shortUrl}) => {
+export const UrlsDetailsPage: FC<{ shortUrl: string }> = ({ shortUrl }) => {
 	const { accessToken } = UseAuthContext();
 	const { data, error, isLoading } = useQuery({
 		queryKey: ["urls", accessToken],
 		queryFn: () => fetchUrlDetails(shortUrl, accessToken),
 	});
 	if (isLoading) return <div>Loading...</div>;
-	if (error) return <div>Error: {error}</div>;
+	if (error) return <div>Error: {error.message}</div>;
 	if (!data) return <div>No data</div>;
 	return (
 		<div className="w-full max-h-fit bg-white rounded-lg shadow-lg p-6">
@@ -26,7 +28,7 @@ export const UrlsDetailsPage:FC<{shortUrl: string}> = ({shortUrl}) => {
 				type="button"
 				className="bg-white text-blue-600 font-sans font-medium py-2 px-4 rounded"
 			>
-				View full analytics &gt; &gt;
+				<Link to="/dashboard/$shortUrl/analytics"  params={{ shortUrl }} >View full analytics &gt; &gt; </Link>
 			</button>
 		</div>
 	);

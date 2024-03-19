@@ -66,7 +66,6 @@ export const Home = (): FunctionComponent => {
 							<QRPanel />
 						</TabsContent>
 					</Tabs>
-
 					<ShortenLinkVector className="h-40 w-40 -z-1 sm:w-60" />
 				</div>
 			</div>

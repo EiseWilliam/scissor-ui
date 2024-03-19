@@ -12,6 +12,8 @@ const AnalyticsPage: React.FC<analyticsProps> = ({shortUrl}) => {
 	const { data, error, isLoading } = useQuery({
 		queryKey: ['analytics', accessToken],
 		queryFn: () => fetchAnalytics(shortUrl, accessToken),
+		refetchOnWindowFocus: true,
+		staleTime: 1000
 	});
 	return (
 		<div className="py-2 flex flex-col gap-2 w-screen ">

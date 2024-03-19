@@ -21,8 +21,8 @@ import { Route as DashboardLayoutIndexImport } from './routes/dashboard/_layout.
 import { Route as DashboardLayoutUrlsImport } from './routes/dashboard/_layout.urls'
 import { Route as DashboardLayoutProfileImport } from './routes/dashboard/_layout.profile'
 import { Route as DashboardLayoutNewImport } from './routes/dashboard/_layout.new'
-import { Route as DashboardLayoutUrlsShortUrlImport } from './routes/dashboard/_layout.urls.$shortUrl'
-import { Route as DashboardLayoutAnalyticsShortUrlImport } from './routes/dashboard/_layout.analytics.$shortUrl'
+import { Route as DashboardLayoutShortUrlIndexImport } from './routes/dashboard/_layout.$shortUrl/index'
+import { Route as DashboardLayoutShortUrlAnalyticsImport } from './routes/dashboard/_layout.$shortUrl/analytics'
 
 // Create Virtual Routes
 
@@ -75,15 +75,15 @@ const DashboardLayoutNewRoute = DashboardLayoutNewImport.update({
   getParentRoute: () => DashboardLayoutRoute,
 } as any)
 
-const DashboardLayoutUrlsShortUrlRoute =
-  DashboardLayoutUrlsShortUrlImport.update({
-    path: '/$shortUrl',
-    getParentRoute: () => DashboardLayoutUrlsRoute,
+const DashboardLayoutShortUrlIndexRoute =
+  DashboardLayoutShortUrlIndexImport.update({
+    path: '/$shortUrl/',
+    getParentRoute: () => DashboardLayoutRoute,
   } as any)
 
-const DashboardLayoutAnalyticsShortUrlRoute =
-  DashboardLayoutAnalyticsShortUrlImport.update({
-    path: '/analytics/$shortUrl',
+const DashboardLayoutShortUrlAnalyticsRoute =
+  DashboardLayoutShortUrlAnalyticsImport.update({
+    path: '/$shortUrl/analytics',
     getParentRoute: () => DashboardLayoutRoute,
   } as any)
 
@@ -127,13 +127,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutIndexImport
       parentRoute: typeof DashboardLayoutImport
     }
-    '/dashboard/_layout/analytics/$shortUrl': {
-      preLoaderRoute: typeof DashboardLayoutAnalyticsShortUrlImport
+    '/dashboard/_layout/$shortUrl/analytics': {
+      preLoaderRoute: typeof DashboardLayoutShortUrlAnalyticsImport
       parentRoute: typeof DashboardLayoutImport
     }
-    '/dashboard/_layout/urls/$shortUrl': {
-      preLoaderRoute: typeof DashboardLayoutUrlsShortUrlImport
-      parentRoute: typeof DashboardLayoutUrlsImport
+    '/dashboard/_layout/$shortUrl/': {
+      preLoaderRoute: typeof DashboardLayoutShortUrlIndexImport
+      parentRoute: typeof DashboardLayoutImport
     }
   }
 }
@@ -148,9 +148,10 @@ export const routeTree = rootRoute.addChildren([
     DashboardLayoutRoute.addChildren([
       DashboardLayoutNewRoute,
       DashboardLayoutProfileRoute,
-      DashboardLayoutUrlsRoute.addChildren([DashboardLayoutUrlsShortUrlRoute]),
+      DashboardLayoutUrlsRoute,
       DashboardLayoutIndexRoute,
-      DashboardLayoutAnalyticsShortUrlRoute,
+      DashboardLayoutShortUrlAnalyticsRoute,
+      DashboardLayoutShortUrlIndexRoute,
     ]),
   ]),
 ])

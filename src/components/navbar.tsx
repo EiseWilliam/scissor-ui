@@ -21,6 +21,7 @@ const Navbar = () => {
 
 	const handleLogOut = () => {
 		localStorage.removeItem("refreshToken");
+		localStorage.removeItem("accessToken");
 		setAccessToken("");
 		setIsAuthenticated(false);
 	};
@@ -62,7 +63,7 @@ const Navbar = () => {
 						<MidNavMenu />
 						{isAuthenticated ? (
 							<DropdownMenu>
-								<DropdownMenuTrigger asChild className="pointer">
+								<DropdownMenuTrigger asChild className="cursor-pointer">
 									<Avatar>
 										<AvatarImage
 											src="https://github.com/shadcn.png"
@@ -72,9 +73,9 @@ const Navbar = () => {
 									</Avatar>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent className="relative z-[2]">
-									<DropdownMenuItem onClick={handleLogOut}>
-										<LogOutIcon className="mr-2 h-4 w-4" />
-										<span>Log out</span>
+									<DropdownMenuItem className="cursor-pointer inline-flex gap-5" onClick={handleLogOut}>
+										<LogOutIcon className=" h-4 w-4" />
+										<span className="text-red-500 font-bold">Log out</span>
 									</DropdownMenuItem>
 								</DropdownMenuContent>
 							</DropdownMenu>

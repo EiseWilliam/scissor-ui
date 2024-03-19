@@ -1,7 +1,5 @@
-"use client";
-
-import React, { createContext, useState, useEffect, useContext } from "react";
-
+import type React from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 
 export type AuthContextType = {
 	isAuthenticated: boolean;
@@ -14,27 +12,29 @@ export type AuthContextType = {
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 const defaultAuthState = (): boolean => {
-    let token: string | null = "";
-    if (typeof window !== 'undefined') {
-        token = window.localStorage.getItem("refreshToken");
-    }
-    if (token) {
-        return true;
-    }
-    return false;
-}
-const defaultAccessToken = () => {
-	let token: string |  null = "";
-	if (typeof window !== 'undefined') {
-		token = window.localStorage.getItem("token");
+	let token: string | null = "";
+	if (typeof window !== "undefined") {
+		token = window.localStorage.getItem("refreshToken");
 	}
-	return token ?? null;
-}
+	if (token) {
+		return true;
+	}
+	return false;
+};
+const getAccessToken = (): string => {
+	const accessToken: string | null =
+		window.localStorage.getItem("accessToken") ?? "";
+	if (accessToken) {
+		return accessToken;
+	}
+	return "";
+};
+
 export default function AuthProvider({
 	children,
 }: { children: React.ReactNode }) {
 	const [isAuthenticated, setIsAuthenticated] = useState(defaultAuthState());
-	const [accessToken, setAccessToken] = useState(defaultAccessToken());
+	const [accessToken, setAccessToken] = useState(getAccessToken());
 	const handleRefreshLogin = () => {
 		const refreshToken = getRefreshToken();
 		if (refreshToken) {
@@ -77,7 +77,7 @@ export default function AuthProvider({
 export function getRefreshToken(): string {
 	const refreshToken: string | null = JSON.parse(
 		window.localStorage.getItem("refresh_token") ?? "",
-	);
+	) as string | null;
 	if (refreshToken) {
 		return refreshToken;
 	}

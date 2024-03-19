@@ -11,6 +11,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { useEffect, useState, memo, FC } from "react";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import { useCopy } from "@/lib/hooks";
@@ -19,66 +20,68 @@ import { api, fetcher, request } from "@/lib/utils";
 import { UseAuthContext } from "@/context/auth-context";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useQuery } from "@tanstack/react-query";
+import { fetchRecentUrls } from "@/services/query";
 type urlClicks = Record<string, number>;
 
 function RecentURLs() {
-	const [urlsData, setUrlsData] = useState<urlClicks>({});
-	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
-	const [copiedText, copy, recentlyCopied] = useCopy();
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-	useEffect(() => {
-		const storedUrls = localStorage.getItem("myShortUrls");
-		if (storedUrls) {
-			const storedData: string[] = JSON.parse(storedUrls) as string[];
-			const lastThreeUrls = storedData.slice(-3);
-			fetch("http://localhost:8000/api/url/stats", {
-				method: "POST",
-				headers: {
-					accept: "application/json",
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ short_urls: lastThreeUrls }),
-			})
-				.then((res) => res.json())
-				.then((data) => {
-					setIsLoading(false);
-					setUrlsData(data);
-				})
-				.catch((err) => {
-					setIsLoading(false);
-					setError(err.message);
-				});
-		} else {
-			setIsLoading(false);
-		}
-	}, []);
+	const { accessToken } = UseAuthContext();
+	const [ copiedText, copy, recentlyCopied] = useCopy();
+	const { data, error, isLoading } = useQuery({
+		queryKey: ["recent_urls", accessToken],
+		queryFn: () => fetchRecentUrls(accessToken),}
+	)
+	// useEffect(() => {
+	// 	const storedUrls = localStorage.getItem("myShortUrls");
+	// 	if (storedUrls) {
+	// 		const storedData: string[] = JSON.parse(storedUrls) as string[];
+	// 		const lastThreeUrls = storedData.slice(-3);
+	// 		fetch("http://localhost:8000/api/url/stats", {
+	// 			method: "POST",
+	// 			headers: {
+	// 				accept: "application/json",
+	// 				"Content-Type": "application/json",
+	// 			},
+	// 			body: JSON.stringify({ short_urls: lastThreeUrls }),
+	// 		})
+	// 			.then((res) => res.json())
+	// 			.then((data) => {
+	// 				setIsLoading(false);
+	// 				setUrlsData(data);
+	// 			})
+	// 			.catch((err) => {
+	// 				setIsLoading(false);
+	// 				setError(err.message);
+	// 			});
+	// 	} else {
+	// 		setIsLoading(false);
+	// 	}
+	// }, []);
 
 	return (
-		<div>
-			<h2 className="text-lg text-left font-medium text-gray-900 dark:text-white">
+		<div className="flex items-start justify-start">
+			<h2 className="text-lg font-medium text-left text-gray-900 dark:text-white">
 				Your Recent URLs
 			</h2>
 
-			<div className="flex gap-2 flex-col-reverse  space-y-4">
+			<div className="flex flex-col-reverse gap-2 space-y-4">
 				{isLoading && (
 					<div className="space-y-2">
-						<Skeleton className="h-14 p-4 bg-gray-100 rounded-md dark:bg-gray-700" />
-						<Skeleton className="h-14 p-4 bg-gray-100 rounded-md dark:bg-gray-700" />
-						<Skeleton className="h-14 p-4 bg-gray-100 rounded-md dark:bg-gray-700" />
+						<Skeleton className="p-4 bg-gray-100 rounded-md h-14 dark:bg-gray-700" />
+						<Skeleton className="p-4 bg-gray-100 rounded-md h-14 dark:bg-gray-700" />
+						<Skeleton className="p-4 bg-gray-100 rounded-md h-14 dark:bg-gray-700" />
 					</div>
 				)}
-				{error && <p className="text-red-500">{error}</p>}
+				{error && <p className="text-red-500">{error.message}</p>}
 				{!isLoading &&
 					!error &&
-					Object.entries(urlsData).map(([url, clicks]) => (
+					Object.entries(data).map(([url, clicks]) => (
 						<motion.div
 							initial={{ opacity: 0 }}
 							animate={{ opacity: 1 }}
 							transition={{ duration: 0.9 }}
 							key={url}
-							className="flex h-14 items-center justify-between p-4 bg-gray-100 rounded-md dark:bg-gray-700"
+							className="flex items-center justify-between p-4 bg-gray-100 rounded-md h-14 dark:bg-gray-700"
 						>
 							<div>
 								<p className="mb-1 text-sm text-gray-900 dark:text-white">
@@ -113,7 +116,9 @@ const AliasFeedback: React.FC<AliasFeedbackProps> = ({ isAvailable }) => {
 		))
 	);
 };
+
 const MemoRecent = memo(RecentURLs);
+
 export function AShortenerPanel() {
 	const { accessToken } = UseAuthContext();
 	const [newUrls, setNewUrls] = useState<string[]>([]);
@@ -166,10 +171,10 @@ export function AShortenerPanel() {
 			});
 	};
 	return (
-		<div className="p-8 bg-white w-full min-w-fit h-fit dark:bg-gray-800">
+		<div className="w-full p-8 bg-white min-w-fit h-fit dark:bg-gray-800">
 			<div className="flex flex-col items-center justify-center h-full">
 				<div className="w-full max-w-md">
-					<form className="rounded-md shadow-sm" onSubmit={handleSubmit}>
+					<form className="rounded-md shadow-sm " onSubmit={handleSubmit}>
 						<Label htmlFor="long-url">URL</Label>
 						<Input
 							id="long-url"
@@ -206,7 +211,7 @@ export function AShortenerPanel() {
 							</Button>
 						) : (
 							<Button disabled className="w-full py-2 mt-4 rounded-b-md">
-								<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+								<ReloadIcon className="w-4 h-4 mr-2 animate-spin" />
 							</Button>
 						)}
 					</form>
@@ -268,7 +273,7 @@ export function AuthShortenerPanel() {
 			});
 	};
 	return (
-		<div className="p-8 bg-white w-full min-w-fit h-fit dark:bg-gray-800">
+		<div className="w-full p-8 bg-white min-w-fit h-fit dark:bg-gray-800">
 			<div className="flex flex-col items-center justify-center h-full">
 				<div className="w-full max-w-md">
 					<form className="rounded-md shadow-sm" onSubmit={handleSubmit}>
@@ -308,7 +313,7 @@ export function AuthShortenerPanel() {
 							</Button>
 						) : (
 							<Button disabled className="w-full py-2 mt-4 rounded-b-md">
-								<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+								<ReloadIcon className="w-4 h-4 mr-2 animate-spin" />
 							</Button>
 						)}
 					</form>
@@ -361,7 +366,7 @@ export default function ShortenerPanel() {
 			});
 	};
 	return (
-		<div className="p-8 bg-white w-full min-w-fit h-fit dark:bg-gray-800">
+		<div className="w-full p-8 bg-white min-w-fit h-fit dark:bg-gray-800">
 			<div className="flex flex-col items-center justify-center h-full">
 				<div className="w-full max-w-md">
 					<form className="rounded-md shadow-sm" onSubmit={handleSubmit}>
@@ -383,7 +388,7 @@ export default function ShortenerPanel() {
 							</Button>
 						) : (
 							<Button disabled className="w-full py-2 mt-4 rounded-b-md">
-								<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+								<ReloadIcon className="w-4 h-4 mr-2 animate-spin" />
 							</Button>
 						)}
 					</form>
@@ -487,7 +492,7 @@ export function QRPanel() {
 						</Button>
 					) : (
 						<Button disabled className="w-full py-2 mt-4 rounded-b-md">
-							<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+							<ReloadIcon className="w-4 h-4 mr-2 animate-spin" />
 						</Button>
 					)}
 				</form>
@@ -517,25 +522,34 @@ const IsAdvancedCheckbox: FC<{
 	const toggle = () => {
 		if (!isAuthenticated) {
 			setShowWarning(true);
+			setTimeout(() => {
+				setShowWarning(false);
+			}, 3000);
 		} else {
 			setIsAdvanced(!isAdvanced);
 		}
 	};
 	return (
-		<div className="flex flex-col items-start space-x-2 my-2 py-2">
+		<div className="flex flex-col items-start py-2 my-2">
 			<div className="flex items-center gap-2">
 				<Checkbox id="terms" checked={isAdvanced} onClick={toggle} />
 				<label
 					htmlFor="terms"
-					className="text-sm text-slate-600 font-sm leading-none"
+					className="text-sm leading-none text-slate-600 font-sm"
 				>
 					Show advanced options
 				</label>
 			</div>
 			{showWarning && (
-				<motion.p 
-				
-				className="text-xs text-red-500">login to use advanced options</motion.p>
+				<motion.p
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					transition={{ duration: 0.9 }}
+					className="flex items-center pl-4 py-2 w-full ml-0 gap-2 text-sm rounded-md bg-destructive/20 text-destructive"
+				>
+					{/* <ExclamationTriangleIcon/>  */}
+					Login to use advanced options
+				</motion.p>
 			)}
 		</div>
 	);

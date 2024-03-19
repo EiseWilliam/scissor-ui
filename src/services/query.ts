@@ -48,6 +48,20 @@ export async function fetchAnalytics(shortUrl:string, accessToken: string | null
     
 }
 
+export async function fetchRecentUrls(accessToken: string | null) {
+    if (accessToken === null) {
+        throw new Error("No access token provided");
+    }
+    const url = `${endpoints.recent_url_stats}`;
+    const headers = {
+        Authorization: `Bearer ${accessToken}`,
+    };
+    const response = await api.get(url, { headers });
+    if (response.status === 200) {
+        return response.data;
+    }
+    throw new Error(response.statusText);
+}
 //   const fetchUrls = async (key ) => {
 //     const { data } = await axios.get()
 //     return data

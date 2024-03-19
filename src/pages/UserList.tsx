@@ -12,8 +12,11 @@ export const UrlsListPage = () => {
 	const { data, error, isLoading } = useQuery({
 		queryKey: ['urls', accessToken],
 		queryFn: () => fetchUrls(accessToken),
+		refetchOnWindowFocus: true,
+		staleTime: 1000,
+		refetchInterval: 1000,
+		refetchIntervalInBackground: true
 	});
-	console.log(data)
 	return (
 		<section className="flex flex-col w-full p-2">
 			<div className="flex flex-row justify-between items-center p-2">
@@ -35,10 +38,11 @@ export const UrlsListPage = () => {
 			{error && <p className="text-red-500">{error.message}</p>}
 			{!isLoading && !error && (
 				<div className="flex gap-2 flex-col">
-					{data.urls.map((data: urlDetails) => (
+					{data?.urls?.map((data: urlDetails) => (
 						<Link
 							key={data.id}
-							to={`/dashboard/urls/${data.short_url}`}
+							to="/dashboard/$shortUrl"
+							params={{ shortUrl: data.short_url }}
 							className=""
 						>
 							<ShortenedUrlCard data={data} />
