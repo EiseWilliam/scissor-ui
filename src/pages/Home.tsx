@@ -3,6 +3,7 @@ import type { FunctionComponent } from "@/lib/types";
 import { Link2Icon } from "@radix-ui/react-icons";
 import { QRPanel, UrlShortener } from "@/components/home-panels";
 import { ShortenLinkVector } from "@/components/background-vectors";
+import { QrCodeIcon } from "lucide-react";
 
 export const Home = (): FunctionComponent => {
 	return (
@@ -55,8 +56,10 @@ export const Home = (): FunctionComponent => {
 								<Link2Icon />
 								Shorten link
 							</TabsTrigger>
-							<TabsTrigger value="qrcode" className="rounded-none w-full">
-								QR code
+							<TabsTrigger value="qrcode" className="rounded-l-lg rounded-none w-full inline-flex gap-2"
+							>
+								<QrCodeIcon />
+								Generate QR
 							</TabsTrigger>
 						</TabsList>
 						<TabsContent value="short" className="w-[400px]">

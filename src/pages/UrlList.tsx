@@ -10,12 +10,12 @@ import { Link } from "@tanstack/react-router";
 export const UrlsListPage = () => {
 	const { accessToken } = UseAuthContext();
 	const { data, error, isLoading } = useQuery({
-		queryKey: ['urls', accessToken],
+		queryKey: ["urls", accessToken],
 		queryFn: () => fetchUrls(accessToken),
 		refetchOnWindowFocus: true,
-		staleTime: 1000,
-		refetchInterval: 1000,
-		refetchIntervalInBackground: true
+		// staleTime: 1000,
+		// refetchInterval: 1000,
+		// refetchIntervalInBackground: true,
 	});
 	return (
 		<section className="flex flex-col w-full p-2">
@@ -39,17 +39,10 @@ export const UrlsListPage = () => {
 			{!isLoading && !error && (
 				<div className="flex gap-2 flex-col">
 					{data?.urls?.map((data: urlDetails) => (
-						<Link
-							key={data.id}
-							to="/dashboard/$shortUrl"
-							params={{ shortUrl: data.short_url }}
-							className=""
-						>
-							<ShortenedUrlCard data={data} />
-						</Link>
+						<ShortenedUrlCard data={data} />
 					))}
 				</div>
 			)}
 		</section>
 	);
-}
+};

@@ -1,7 +1,6 @@
+import { UrlsListPage } from "@/pages/UrlList";
+import { createFileRoute } from "@tanstack/react-router";
 
-import { UrlsListPage } from '@/pages/UserList'
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/dashboard/_layout/')({
-  component: UrlsListPage
-})
+export const Route = createFileRoute("/dashboard/_layout/")({
+	component: UrlsListPage,
+});

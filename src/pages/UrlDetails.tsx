@@ -1,5 +1,6 @@
 import { Overview } from "@/components/analytics";
 import { ShortenedUrlCard } from "@/components/myurls";
+import QRCodeGenerator from "@/components/qrcode-ui";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { UseAuthContext } from "@/context/auth-context";
 import { fetchUrlDetails, fetchUrls } from "@/services/query";
@@ -21,7 +22,7 @@ export const UrlsDetailsPage: FC<{ shortUrl: string }> = ({ shortUrl }) => {
 		<div className="w-full max-h-fit bg-white rounded-lg shadow-lg p-6">
 			<ShortenedUrlCard data={data} />
 			<div className="flex fex-row gap-2">
-				<QRCode />
+				<QRCodeGenerator />
 				<QuickStats {...data}/>
 			</div>
 			<button

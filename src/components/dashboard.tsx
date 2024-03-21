@@ -1,9 +1,11 @@
-
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Link2Icon } from "@radix-ui/react-icons";
+import { useState } from "react";
+import { QrCodeIcon } from "lucide-react";
 
 export function DashNavMenu() {
+	const [isCollasped, setIsCollasped] = useState(false);
 	return (
 		<div className="flex flex-col w-fit h-screen border-r bg-gray-100/40 lg:block dark:bg-gray-800/40 pr-10">
 			<nav className="flex-1 flex flex-col items-start py-4 justify-start gap-1 px-10 text-sm">
@@ -14,29 +16,23 @@ export function DashNavMenu() {
 					<Link
 						className="flex flex-row items-center gap-1.5 text-sm"
 						to="/dashboard/urls"
-						activeProps={{
-							className: "font-bold text-blue-600",
-						}}
 					>
 						<Link2Icon className="w-6 h-6" />
 						<span className="text-xs font-medium">My Urls</span>
 					</Link>
 				</Button>
-				<Button
+				{/* <Button
 					variant="link"
 					className="w-fit p-0 text-black hover:text-blue-600 "
 				>
 					<Link
 						className="flex flex-row items-center gap-1.5 text-sm [&.active]:font-bold"
 						href="/dashboard/analytics"
-							activeProps={{
-							className: "font-bold text-blue-600",
-						}}
 					>
 						<BarChart2Icon className="w-6 h-6" />
 						<span className="text-xs font-medium">Analytics</span>
 					</Link>
-				</Button>
+				</Button> */}
 				<Button
 					variant="link"
 					className="w-fit p-0 text-black hover:text-blue-600 "
@@ -44,28 +40,14 @@ export function DashNavMenu() {
 					<Link
 						className="flex flex-row items-center gap-1.5 text-sm [&.active]:font-bold"
 						to="/dashboard/profile"
-							activeProps={{
+						activeProps={{
 							className: "font-bold text-blue-600",
 						}}
 					>
-						<UsersIcon className="w-6 h-6" />
-						<span className="text-xs font-medium">Settings</span>
+						<QrCodeIcon className="w-6 h-6" />
+						<span className="text-xs font-medium">QR Codes</span>
 					</Link>
-				</Button>
-				<Button
-					variant="link"
-					className="w-fit p-0 text-black hover:text-blue-600 "
-				>
-					<Link
-						className="flex flex-row items-center gap-1.5 text-sm [&.active]:font-bold"
-						href="#"
-							activeProps={{
-							className: "font-bold text-blue-600",
-						}}
-					>
-						<SettingsIcon className="w-6 h-6" />
-						<span className="text-xs font-medium">Settings</span>
-					</Link>
+				
 				</Button>
 			</nav>
 		</div>

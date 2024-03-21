@@ -3,7 +3,14 @@ import { Card } from "@/components/ui/card";
 import { CalendarIcon, CopyIcon } from "@radix-ui/react-icons";
 import type { urlDetails } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
-import React, { type FC, type ComponentPropsWithoutRef } from "react";
+import React, {
+	type FC,
+	type ComponentPropsWithoutRef,
+	type FormHTMLAttributes,
+	useState,
+	Dispatch,
+	SetStateAction,
+} from "react";
 import { cn } from "@/lib/utils";
 import {
 	Dialog,
@@ -22,8 +29,23 @@ import {
 	DrawerTitle,
 	DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+	BarChart2Icon,
+	Edit2Icon,
+	EditIcon,
+	LucideQrCode,
+	Trash2Icon,
+} from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { InputGroup } from "./forms/form-input";
+import { type SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { UseAuthContext } from "@/context/auth-context";
+import ErrorElement from "./ui/error";
+import { customAliasIsAvailable, updateUrlDetails } from "@/services/shortener";
+import { useRouter } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ShortenedUrlCardProps extends ComponentPropsWithoutRef<"div"> {
 	data: urlDetails;
@@ -57,28 +79,41 @@ export const ShortenedUrlCard: FC<ShortenedUrlCardProps> = ({
 						</h3>
 					</div>
 				</div>
-				<div className="flex flex-row gap-2 items-center text-slate-700 text-sm">
-					<CalendarIcon />
-					{formatDate(data.created_at)}
+				<div className="flex flex-row gap-5 items-center text-slate-700 text-sm">
+					<span className="inline-flex">
+						<CalendarIcon />
+						{formatDate(data.created_at)}
+					</span>
+					<Link
+						className="inline-flex"
+						to="/dashboard/$shortUrl/analytics"
+						params={{ shortUrl: data.short_url }}
+					>
+						<BarChart2Icon className="w-4 h-4" />
+						Analytics
+					</Link>
+					<span className="inline-flex">
+						<LucideQrCode className="w-4 h-4" />
+						QR Code
+					</span>
 				</div>
 			</div>
-			<div className="justify-self-end flex-grow flex justify-end">
+			<div className="justify-self-end flex-grow gap-1 flex justify-end">
 				{/* <p className="w-15 h-15 text-sm">Edit</p> */}
-				<EditButton currentData={data} />
+				<EditButton data={data} />
 
 				<Button
 					variant="outline"
 					className="w-fit rounded-none h-fit p-2 gap-2"
 				>
-					<CopyIcon className="" />
-					<p className="w-15 h-15 text-sm">Copy</p>
+					<Trash2Icon className="w-4 h-4 " color="red" />
 				</Button>
 			</div>
 		</Card>
 	);
 };
 
-export const EditButton: React.FC<{currentData: urlDetails}> = (currentData) => {
+export const EditButton: React.FC<{ data: urlDetails }> = ({ data }) => {
 	const [open, setOpen] = React.useState(false);
 	const isDesktop = true;
 
@@ -90,15 +125,15 @@ export const EditButton: React.FC<{currentData: urlDetails}> = (currentData) => 
 						variant="outline"
 						className="w-fit rounded-none h-fit p-2 gap-2"
 					>
-						<CopyIcon className="" />
-						Edit
+						<Edit2Icon className="w-4 h-4" />
+						<p className="text-xs">Edit</p>
 					</Button>
 				</DialogTrigger>
-				<DialogContent className="sm:max-w-[425px]">
+				<DialogContent className="">
 					<DialogHeader>
-						<DialogTitle className="text-2xl">Edit Link</DialogTitle>
+						<DialogTitle className="text-2xl  font-bold">Edit Link</DialogTitle>
 					</DialogHeader>
-					<ProfileForm currentData={currentData} />
+					<EditLinkForm currentData={data} setOpen={setOpen} />
 				</DialogContent>
 			</Dialog>
 		);
@@ -116,7 +151,7 @@ export const EditButton: React.FC<{currentData: urlDetails}> = (currentData) => 
 						Make changes to your profile here. Click save when you&apos;re done.
 					</DrawerDescription>
 				</DrawerHeader>
-				<ProfileForm className="px-4" currentData={currentData} />
+				<EditLinkForm className="px-4" currentData={data} setOpen={setOpen} />
 				<DrawerFooter className="pt-2">
 					<DrawerClose asChild>
 						<Button variant="outline">Cancel</Button>
@@ -127,21 +162,86 @@ export const EditButton: React.FC<{currentData: urlDetails}> = (currentData) => 
 	);
 };
 
-function ProfileForm({
-	className,
-	currentData,
-}: React.ComponentProps<"form"> & { currentData: urlDetails }) {
+const EditLinkForm: React.FC<
+	FormHTMLAttributes<HTMLFormElement> & {
+		currentData: urlDetails;
+		setOpen: Dispatch<SetStateAction<boolean>>;
+	}
+> = ({ className, currentData, setOpen }) => {
+	const { accessToken } = UseAuthContext();
+	const [isLoading, setIsLoading] = useState(false);
+	const [err, setErr] = useState(null);
+	const queryClient = useQueryClient();
+
+	const schema = z.object({
+		title: z.string().max(60, "Title cannot exceed 60 characters").optional(),
+		alias: z
+			.string()
+			.optional()
+			.refine((alias: string | undefined) => {
+				if (!alias) return true;
+				return customAliasIsAvailable(alias, accessToken);
+			}, "Alias already exists"),
+	});
+	type ValidationSchemaType = z.infer<typeof schema>;
+	const onSubmit: SubmitHandler<ValidationSchemaType> = (data) => {
+		setIsLoading(true);
+		updateUrlDetails(currentData.short_url, accessToken, {
+			title: data.title,
+			alias: data.alias,
+		})
+			.then(() => {
+				setIsLoading(false);
+				queryClient.invalidateQueries(["urls", accessToken]);
+				setOpen(false);
+			})
+			.catch((err) => {
+				setIsLoading(false);
+				setErr(err.message);
+			});
+	};
+
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<ValidationSchemaType>({
+		resolver: zodResolver(schema),
+	});
 	return (
-		<form className={cn("grid items-start gap-4", className)}>
-			<div className="grid gap-2">
-				<Label htmlFor="title">Title</Label>
-				<Input type="text" id="title" defaultValue={currentData.title} />
+		<form
+			className={cn(
+				"flex flex-col items-start gap-6 w-fit h-fit pt-6 pb-4",
+				className,
+			)}
+			onSubmit={handleSubmit(onSubmit)}
+		>
+			<InputGroup
+				id="title"
+				label="Title"
+				type="text"
+				placeholder={currentData.title}
+				error={errors.title?.message}
+				fn={register("title")}
+				className="w-full"
+			/>
+			<div className="flex items-end justify-center gap-2 h-fit">
+				<p className="text-slate-800 text-normal h-full font-medium bg-slate-100 rounded-l-sm border-[1px] border-slate-300 py-3 pl-4 pr-3">
+					localhost:8000/
+				</p>
+				<InputGroup
+					id="alias"
+					label="Custom Back Half"
+					type="text"
+					placeholder={currentData.short_url}
+					error={errors.alias?.message}
+					fn={register("alias")}
+				/>
 			</div>
-			<div className="grid gap-2">
-				<Label htmlFor="custom-alias">Custom Alias</Label>
-				<Input id="custom-alias" defaultValue={currentData.short_url} />
-			</div>
-			<Button type="submit">Save changes</Button>
+			{err && <ErrorElement message={err} />}
+			<Button className="w-full" type="submit" disabled={isLoading}>
+				Save changes
+			</Button>
 		</form>
 	);
-}
+};
