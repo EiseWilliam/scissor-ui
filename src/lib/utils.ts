@@ -5,18 +5,7 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
-export async function SendRequest(url: string, method: string, data: any) {
-	const requestOptions = {
-		method: method,
-		headers: { "Content-Type": "application/json", ...authHeader() },
-		body: JSON.stringify(data),
-	};
-	return fetch(url, requestOptions)
-		.then((response) => response.json())
-		.then((data) => {
-			return data;
-		});
-}
+
 export function formatDate(dateString: string) {
 	const date = new Date(dateString);
 
@@ -34,7 +23,6 @@ export function formatDate(dateString: string) {
 
 import axios from "axios";
 import { UseAuthContext } from "@/context/auth-context";
-import { useRouter } from "next/navigation";
 
 export const api = axios.create({
 	baseURL: "http://localhost:8000/api",

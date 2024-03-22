@@ -1,42 +1,27 @@
-import { useEffect, useState } from 'react';
-import AuthContext from "@/context/auth-context";
-import { useContext, useDebugValue } from "react";
+import { useState } from "react";
 
-
-const useAuth = () => {
-  // const { auth, setAuth } = useContext(AuthContext);
-  // useDebugValue(auth, auth => auth?.user ? "Logged In" : "Logged Out")
-  return useContext(AuthContext);
-}
-
-export default useAuth;
 
 type fetchParam = {
-  url: string
-  method: string
-}
-
+	url: string;
+	method: string;
+};
 
 export function useCopy() {
-  const [copiedText, setCopiedText] = useState<string | null>(null);
-  const [recentlyCopied, setRecentlyCopied] = useState<boolean>(false);
+	const [copiedText, setCopiedText] = useState<string | null>(null);
+	async function copy(text: string) {
+		if (!navigator?.clipboard) {
+			return false;
+		}
 
-  const copy = async (text: string) => {
-    if (!navigator?.clipboard) {
-      return false;
-    }
+		try {
+			await navigator.clipboard.writeText(text);
+			setCopiedText(text);
+			return true;
+		} catch (error) {
+			setCopiedText(null);
+			return false;
+		}
+	}
 
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedText(text);
-      setRecentlyCopied(true); // Set recentlyCopied to true after successful copy
-      return true;
-    } catch (error) {
-      setCopiedText(null);
-      setRecentlyCopied(false); // Set recentlyCopied to false if copy fails
-      return false;
-    }
-  };
-
-  return [copiedText, copy, recentlyCopied]; // Return recentlyCopied state
+	return {copiedText, copy}; // Return recentlyCopied state
 }

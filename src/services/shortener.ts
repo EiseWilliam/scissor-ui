@@ -1,26 +1,21 @@
 import { api, fetcher } from "@/lib/utils";
 import { useState } from "react";
 
-const useSimpleUrlShorten = (url: string) => {
+const useSimpleUrlShorten = (longUrl: string) => {
 	const [error, setError] = useState<string>("");
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [newUrl, setNewUrl] = useState<string[]>([]);
 	const endpoint = "url/quick_shorten?url=";
 	const handleSubmit = () => {
-		fetch(`http://localhost:8000/api/url/quick_shorten?url=${longUrl}`, {
-			method: "POST",
+		api.post(`url/quick_shorten?url=${longUrl}`, {
 			headers: {
 				accept: "application/json",
 				"Content-Type": "application/json",
 			},
 		})
 			.then((res) => {
-				if (res.ok) return res.json();
-				setError(res.status.toString());
-			})
-			.then((data) => {
 				setIsLoading(false);
-				setNewUrl(data);
+				setNewUrl(res.data);
 			})
 			.catch((error) => {
 				setIsLoading(false);

@@ -1,5 +1,5 @@
 import { IconProps } from "@/lib/types";
-import React, { SVGProps , FC} from "react";
+import type { FC} from "react";
 export const RegisterVector: FC<IconProps> = ({
 	className,
 	title = "register",

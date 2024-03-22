@@ -8,8 +8,8 @@ import React, {
 	type ComponentPropsWithoutRef,
 	type FormHTMLAttributes,
 	useState,
-	Dispatch,
-	SetStateAction,
+	type Dispatch,
+	type SetStateAction,
 } from "react";
 import { cn } from "@/lib/utils";
 import {
@@ -192,7 +192,7 @@ const EditLinkForm: React.FC<
 		})
 			.then(() => {
 				setIsLoading(false);
-				queryClient.invalidateQueries(["urls", accessToken]);
+				queryClient.invalidateQueries({queryKey: ["urls", accessToken]});
 				setOpen(false);
 			})
 			.catch((err) => {

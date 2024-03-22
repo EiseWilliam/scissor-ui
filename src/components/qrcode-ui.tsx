@@ -79,3 +79,5 @@ export const QRCodeGenerator: React.FC = () => {
 };
 
 export default QRCodeGenerator;
+
+

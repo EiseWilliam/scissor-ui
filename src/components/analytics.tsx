@@ -30,7 +30,6 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import WMap from "@/components/world-map";
-import { ChevronLeftIcon } from "@radix-ui/react-icons";
 import type {
 	dict,
 	locationData,

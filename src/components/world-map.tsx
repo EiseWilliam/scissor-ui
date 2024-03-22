@@ -53,22 +53,32 @@ function WMap({ data, ...props }: WMapProps) {
 				{...props}
 				map={worldMill}
 				zoomOnScroll={false}
-				containerStyle={containerStyle}
+				// Remove the containerStyle prop
+				// containerStyle={containerStyle}
 				regionStyle={regionStyle}
 				backgroundColor="white"
-				series={series}
+				series={{
+					regions: [
+						{
+							attribute: "value",
+							values: data,
+							scale: ["#AAAAAA", "#0077be"],
+							normalizeFunction: "polynomial",
+						},
+					],
+				}}
 				onRegionTipShow={(event, label, code) => {
-					label.html(`
+					label.innerHTML = `
 				<div className="bg-white">
 				  <p>
 				  <b>
-				  ${label.html()}
+			
 				  </b>
 				  </p>
 				  <p>
 				  ${data[code]}
 				  </p>
-				  </div>`);
+				  </div>`;
 				}}
 			/>
 		</div>

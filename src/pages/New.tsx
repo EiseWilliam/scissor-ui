@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import ErrorElement from "@/components/ui/error";
 import { UseAuthContext } from "@/context/auth-context";
 import type { urlDetails } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { api, cn } from "@/lib/utils";
 import { customAliasIsAvailable, updateUrlDetails } from "@/services/shortener";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "@tanstack/react-router";
@@ -17,11 +17,13 @@ const NewLinkForm: React.FC<FormHTMLAttributes<HTMLFormElement> & {}> = ({
 	const currentData = {
 		title: "string",
 		short_url: "string",
+		original_url: "https://exmaplelongurl.com/something"
 	};
 	const { accessToken } = UseAuthContext();
 	const [isLoading, setIsLoading] = useState(false);
 	const [err, setErr] = useState(null);
 	const schema = z.object({
+		link: z.string().min(3, "Link must be at least 3 characters").url("Invalid URL").optional(),
 		title: z.string().max(60, "Title cannot exceed 60 characters").optional(),
 		alias: z
 			.string()
@@ -42,7 +44,6 @@ const NewLinkForm: React.FC<FormHTMLAttributes<HTMLFormElement> & {}> = ({
 		})
 			.then(() => {
 				setIsLoading(false);
-				onSuccess();
 			})
 			.catch((err) => {
 				setIsLoading(false);
@@ -106,105 +107,98 @@ const NewLinkForm: React.FC<FormHTMLAttributes<HTMLFormElement> & {}> = ({
 		</div>
 	);
 };
-export function AShortenerPanel() {
-	const { accessToken } = UseAuthContext();
-	const [newUrls, setNewUrls] = useState<string[]>([]);
-	const [longUrl, setLongUrl] = useState("");
-	const [alias, setAlias] = useState("");
-	const [aliasAvailable, setAliasAvailable] = useState(null);
-	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState("");
+// export function AShortenerPanel() {
+// 	const { accessToken } = UseAuthContext();
+// 	const [newUrls, setNewUrls] = useState<string[]>([]);
+// 	const [longUrl, setLongUrl] = useState("");
+// 	const [alias, setAlias] = useState("");
+// 	const [aliasAvailable, setAliasAvailable] = useState(null);
+// 	const [isLoading, setIsLoading] = useState(false);
+// 	const [error, setError] = useState("");
 
-	const verifyCustom = (alias: string) => {
-		fetcher(`/url/verify_custom?alias=${alias}`)
-			.then((d) => setAliasAvailable(d))
-			.catch((e) => console.log(e));
-	};
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-	useEffect(() => {
-		setTimeout(() => {
-			if (alias.length > 2) {
-				verifyCustom(alias);
-			}
-		}, 1000);
-	}, [alias]);
-	const config = {
-		headers: {
-			Authorization: `Bearer ${accessToken}`,
-		},
-	};
+// 	const verifyCustom = (alias: string) => {
+// 		api.get(`/url/verify_custom?alias=${alias}`)
+// 			.then((d) => setAliasAvailable(d))
+// 			.catch((e) => console.log(e));
+// 	};
+// 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+// 	const config = {
+// 		headers: {
+// 			Authorization: `Bearer ${accessToken}`,
+// 		},
+// 	};
 
-	const handleSubmit = async (e) => {
-		e.preventDefault();
-		if (!longUrl.trim()) {
-			setError("Please enter a valid URL");
-			return;
-		}
-		setIsLoading(true);
+// 	const handleSubmit = async (e) => {
+// 		e.preventDefault();
+// 		if (!longUrl.trim()) {
+// 			setError("Please enter a valid URL");
+// 			return;
+// 		}
+// 		setIsLoading(true);
 
-		request
-			.post("/url/shorten", { url: longUrl, custom_alias: alias }, config)
-			.then((res) => {
-				if (res.status === 200) {
-					setIsLoading(false);
-				} else {
-					setIsLoading(false);
-					setError(res.data);
-				}
-			})
-			.catch((error) => {
-				setIsLoading(false);
-				setError(error.message);
-			});
-	};
-	return (
-		<div className="w-full p-8 bg-white min-w-fit h-fit dark:bg-gray-800">
-			<div className="flex flex-col items-center justify-center h-full">
-				<div className="w-full max-w-md">
-					<form className="rounded-md shadow-sm " onSubmit={handleSubmit}>
-						<Label htmlFor="long-url">URL</Label>
-						<Input
-							id="long-url"
-							type="url"
-							placeholder={error ? error : "Paste long URL here..."}
-							value={longUrl}
-							onChange={(e) => setLongUrl(e.target.value)}
-						/>
-						<Label htmlFor="alias">Custom alias(Optional)</Label>
-						<Input
-							id="alias"
-							type="text"
-							placeholder={error ? error : "Set a Custom Alias"}
-							value={alias}
-							onChange={(e) => {
-								setAliasAvailable(null);
-								setAlias(e.target.value);
-							}}
-						/>
-						<AliasFeedback isAvailable={aliasAvailable} />
-						<Label htmlFor="alias">QR code(Optional)</Label>
-						<div className="flex items-center space-x-2">
-							<Switch id="airplane-mode" />
-							<Label htmlFor="airplane-mode">Generate Qr Code</Label>
-						</div>
-						{!isLoading ? (
-							<Button
-								className="w-full py-2 mt-4 rounded-b-md"
-								type="submit"
-								variant="default"
-								disabled={aliasAvailable === false}
-							>
-								Trim Url
-							</Button>
-						) : (
-							<Button disabled className="w-full py-2 mt-4 rounded-b-md">
-								<ReloadIcon className="w-4 h-4 mr-2 animate-spin" />
-							</Button>
-						)}
-					</form>
-				</div>
-			</div>
-		</div>
-	);
-}
+// 		api
+// 			.post("/url/shorten", { url: longUrl, custom_alias: alias }, config)
+// 			.then((res) => {
+// 				if (res.status === 200) {
+// 					setIsLoading(false);
+// 				} else {
+// 					setIsLoading(false);
+// 					setError(res.data);
+// 				}
+// 			})
+// 			.catch((error) => {
+// 				setIsLoading(false);
+// 				setError(error.message);
+// 			});
+// 	};
+// 	return (
+// 		<div className="w-full p-8 bg-white min-w-fit h-fit dark:bg-gray-800">
+// 			<div className="flex flex-col items-center justify-center h-full">
+// 				<div className="w-full max-w-md">
+// 					<form className="rounded-md shadow-sm " onSubmit={handleSubmit}>
+// 						<Label htmlFor="long-url">URL</Label>
+// 						<Input
+// 							id="long-url"
+// 							type="url"
+// 							placeholder={error ? error : "Paste long URL here..."}
+// 							value={longUrl}
+// 							onChange={(e) => setLongUrl(e.target.value)}
+// 						/>
+// 						<Label htmlFor="alias">Custom alias(Optional)</Label>
+// 						<Input
+// 							id="alias"
+// 							type="text"
+// 							placeholder={error ? error : "Set a Custom Alias"}
+// 							value={alias}
+// 							onChange={(e) => {
+// 								setAliasAvailable(null);
+// 								setAlias(e.target.value);
+// 							}}
+// 						/>
+// 						<AliasFeedback isAvailable={aliasAvailable} />
+// 						<Label htmlFor="alias">QR code(Optional)</Label>
+// 						<div className="flex items-center space-x-2">
+// 							<Switch id="airplane-mode" />
+// 							<Label htmlFor="airplane-mode">Generate Qr Code</Label>
+// 						</div>
+// 						{!isLoading ? (
+// 							<Button
+// 								className="w-full py-2 mt-4 rounded-b-md"
+// 								type="submit"
+// 								variant="default"
+// 								disabled={aliasAvailable === false}
+// 							>
+// 								Trim Url
+// 							</Button>
+// 						) : (
+// 							<Button disabled className="w-full py-2 mt-4 rounded-b-md">
+// 								<ReloadIcon className="w-4 h-4 mr-2 animate-spin" />
+// 							</Button>
+// 						)}
+// 					</form>
+// 				</div>
+// 			</div>
+// 		</div>
+// 	);
+// }
 export default NewLinkForm;

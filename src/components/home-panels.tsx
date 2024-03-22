@@ -10,8 +10,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { useEffect, useState, memo, FC } from "react";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { useEffect, useState, memo, type FC } from "react";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import { useCopy } from "@/lib/hooks";
@@ -22,11 +21,12 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useQuery } from "@tanstack/react-query";
 import { fetchRecentUrls } from "@/services/query";
+import { QrCode, QrCodeIcon } from "lucide-react";
 type urlClicks = Record<string, number>;
 
 function RecentURLs() {
 	const { accessToken } = UseAuthContext();
-	const [ copiedText, copy, recentlyCopied] = useCopy();
+	const {copiedText, copy}= useCopy();
 	const { data, error, isLoading } = useQuery({
 		queryKey: ["recent_urls", accessToken],
 		queryFn: () => fetchRecentUrls(accessToken),}
@@ -75,7 +75,7 @@ function RecentURLs() {
 				{error && <p className="text-red-500">{error.message}</p>}
 				{!isLoading &&
 					!error &&
-					Object.entries(data).map(([url, clicks]) => (
+					Object.entries(data as urlClicks).map(([url, clicks]) => (
 						<motion.div
 							initial={{ opacity: 0 }}
 							animate={{ opacity: 1 }}
@@ -84,7 +84,7 @@ function RecentURLs() {
 							className="flex items-center justify-between p-4 bg-gray-100 rounded-md h-14 dark:bg-gray-700"
 						>
 							<div>
-								<p className=" text-sm text-gray-900 dark:text-white">
+								<p className="text-sm text-gray-900 dark:text-white">
 									{url}
 								</p>
 								<p className="text-xs text-gray-500">Clicked {clicks} times</p>
@@ -223,105 +223,105 @@ export function AuthShortenerPanel() {
 	);
 }
 
-export default function ShortenerPanel() {
-	const { isAuthenticated, accessToken, setIsAuthenticated } = UseAuthContext();
-	const [newUrls, setNewUrls] = useState<string[]>([]);
-	const [longUrl, setLongUrl] = useState("");
-	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState("");
+// export default function ShortenerPanel() {
+// 	const { isAuthenticated, accessToken, setIsAuthenticated } = UseAuthContext();
+// 	const [newUrls, setNewUrls] = useState<string[]>([]);
+// 	const [longUrl, setLongUrl] = useState("");
+// 	const [isLoading, setIsLoading] = useState(false);
+// 	const [error, setError] = useState("");
 
-	const addValueToArray = (newUrl: string) => {
-		const storedUrls = localStorage.getItem("myShortUrls");
-		const updatedUrls = storedUrls ? JSON.parse(storedUrls) : [];
-		updatedUrls.push(newUrl);
-		setNewUrls((prevState) => [...prevState, newUrl]);
-		localStorage.setItem("myShortUrls", JSON.stringify(updatedUrls));
-		setLongUrl("");
-	};
-	const handleSubmit = async (e) => {
-		e.preventDefault();
-		if (!longUrl.trim()) {
-			setError("Please enter a valid URL");
-			return;
-		}
-		setIsLoading(true);
-		fetch(`http://localhost:8000/api/url/quick_shorten?url=${longUrl}`, {
-			method: "POST",
-			headers: {
-				accept: "application/json",
-				"Content-Type": "application/json",
-			},
-		})
-			.then((res) => {
-				if (res.ok) return res.json();
-				setError(res.status.toString());
-			})
-			.then((data) => {
-				setIsLoading(false);
-				addValueToArray(data);
-			})
-			.catch((error) => {
-				setIsLoading(false);
-				setError(error.message);
-			});
-	};
-	return (
-		<div className="w-full p-8 bg-white min-w-fit h-fit dark:bg-gray-800">
-			<div className="flex flex-col items-center justify-center h-full">
-				<div className="w-full max-w-md">
-					<form className="rounded-md shadow-sm" onSubmit={handleSubmit}>
-						<Label htmlFor="long-url">URL</Label>
-						<Input
-							id="long-url"
-							type="url"
-							placeholder={error ? error : "Paste long URL here..."}
-							value={longUrl}
-							onChange={(e) => setLongUrl(e.target.value)}
-						/>
-						{!isLoading ? (
-							<Button
-								className="w-full py-2 mt-4 rounded-b-md"
-								type="submit"
-								variant="default"
-							>
-								Trim Url
-							</Button>
-						) : (
-							<Button disabled className="w-full py-2 mt-4 rounded-b-md">
-								<ReloadIcon className="w-4 h-4 mr-2 animate-spin" />
-							</Button>
-						)}
-					</form>
-				</div>
-				<div className="w-full max-w-md mt-8">
-					<RecentURLs Urls={newUrls} />
-				</div>
-			</div>
-		</div>
-	);
-}
+// 	const addValueToArray = (newUrl: string) => {
+// 		const storedUrls = localStorage.getItem("myShortUrls");
+// 		const updatedUrls = storedUrls ? JSON.parse(storedUrls) : [];
+// 		updatedUrls.push(newUrl);
+// 		setNewUrls((prevState) => [...prevState, newUrl]);
+// 		localStorage.setItem("myShortUrls", JSON.stringify(updatedUrls));
+// 		setLongUrl("");
+// 	};
+// 	const handleSubmit = async (e) => {
+// 		e.preventDefault();
+// 		if (!longUrl.trim()) {
+// 			setError("Please enter a valid URL");
+// 			return;
+// 		}
+// 		setIsLoading(true);
+// 		fetch(`http://localhost:8000/api/url/quick_shorten?url=${longUrl}`, {
+// 			method: "POST",
+// 			headers: {
+// 				accept: "application/json",
+// 				"Content-Type": "application/json",
+// 			},
+// 		})
+// 			.then((res) => {
+// 				if (res.ok) return res.json();
+// 				setError(res.status.toString());
+// 			})
+// 			.then((data) => {
+// 				setIsLoading(false);
+// 				addValueToArray(data);
+// 			})
+// 			.catch((error) => {
+// 				setIsLoading(false);
+// 				setError(error.message);
+// 			});
+// 	};
+// 	return (
+// 		<div className="w-full p-8 bg-white min-w-fit h-fit dark:bg-gray-800">
+// 			<div className="flex flex-col items-center justify-center h-full">
+// 				<div className="w-full max-w-md">
+// 					<form className="rounded-md shadow-sm" onSubmit={handleSubmit}>
+// 						<Label htmlFor="long-url">URL</Label>
+// 						<Input
+// 							id="long-url"
+// 							type="url"
+// 							placeholder={error ? error : "Paste long URL here..."}
+// 							value={longUrl}
+// 							onChange={(e) => setLongUrl(e.target.value)}
+// 						/>
+// 						{!isLoading ? (
+// 							<Button
+// 								className="w-full py-2 mt-4 rounded-b-md"
+// 								type="submit"
+// 								variant="default"
+// 							>
+// 								Trim Url
+// 							</Button>
+// 						) : (
+// 							<Button disabled className="w-full py-2 mt-4 rounded-b-md">
+// 								<ReloadIcon className="w-4 h-4 mr-2 animate-spin" />
+// 							</Button>
+// 						)}
+// 					</form>
+// 				</div>
+// 				<div className="w-full max-w-md mt-8">
+// 					<RecentURLs Urls={newUrls} />
+// 				</div>
+// 			</div>
+// 		</div>
+// 	);
+// }
 
 export function QRPanel() {
 	const { isAuthenticated, accessToken } = UseAuthContext();
 	const [isAdvanced, setIsAdvanced] = useState(false);
-	const PlaceholderSVG = (size: number) => {
-		return (
-			<svg
-				width={size}
-				height={size}
-				viewBox={`0 0 ${size} ${size}`}
-				xmlns="http://www.w3.org/2000/svg"
-			>
-				<title>Placeholder SVG</title>
-				<rect x="10" y="10" width="30" height="30" fill="#ccc" />
-				<rect x="50" y="10" width="30" height="30" fill="#ccc" />
-				<rect x="10" y="50" width="30" height="30" fill="#ccc" />
-				<rect x="90" y="10" width="30" height="30" fill="#ccc" />
-				<rect x="90" y="50" width="30" height="30" fill="#ccc" />
-				<rect x="90" y="90" width="30" height="30" fill="#ccc" />
-			</svg>
-		);
-	};
+	// const PlaceholderSVG = (size: number) => {
+	// 	return (
+	// 		<svg
+	// 			width={size}
+	// 			height={size}
+	// 			viewBox={`0 0 ${size} ${size}`}
+	// 			xmlns="http://www.w3.org/2000/svg"
+	// 		>
+	// 			<title>Placeholder SVG</title>
+	// 			<rect x="10" y="10" width="30" height="30" fill="#ccc" />
+	// 			<rect x="50" y="10" width="30" height="30" fill="#ccc" />
+	// 			<rect x="10" y="50" width="30" height="30" fill="#ccc" />
+	// 			<rect x="90" y="10" width="30" height="30" fill="#ccc" />
+	// 			<rect x="90" y="50" width="30" height="30" fill="#ccc" />
+	// 			<rect x="90" y="90" width="30" height="30" fill="#ccc" />
+	// 		</svg>
+	// 	);
+	// };
 
 	const [url, setUrl] = useState("");
 	const [qr, setQr] = useState(null);
@@ -405,7 +405,7 @@ export function QRPanel() {
 						dangerouslySetInnerHTML={{ __html: qr }}
 					/>
 				) : (
-					<PlaceholderSVG size={400} />
+					<QrCode className="w-full bg-opacity-40" size={300} />
 				)}
 			</CardFooter>
 		</Card>
@@ -487,7 +487,7 @@ export const UrlShortener = () => {
 
 		try {
 			if (isAdvanced) {
-				const res = api.post(
+				const res = await api.post(
 					"/url/shorten",
 					{ url: longUrl, custom_alias: alias },
 					config,
