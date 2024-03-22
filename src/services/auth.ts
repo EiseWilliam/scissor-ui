@@ -11,7 +11,7 @@ export async function loginUser(email: string, password: string) {
 	const requestData = new URLSearchParams();
 	requestData.append("username", email);
 	requestData.append("password", password);
-	const res = await fetch("http://localhost:8000/api/auth/login", {
+	const res = await fetch("https://scissor-api-bosc.onrender.com/api/auth/login", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/x-www-form-urlencoded",

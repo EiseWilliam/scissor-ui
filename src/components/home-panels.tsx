@@ -330,7 +330,7 @@ export function QRPanel() {
 		e.preventDefault();
 		setIsLoading(true);
 		fetch(
-			`http://localhost:8000/api/url/quick_qr?url=${url}&is_short_url=false`,
+			`https://scissor-api-bosc.onrender.com/api/url/quick_qr?url=${url}&is_short_url=false`,
 			{
 				method: "POST",
 				headers: {
@@ -499,7 +499,7 @@ export const UrlShortener = () => {
 				}
 			} else {
 				const res = await fetch(
-					`http://localhost:8000/api/url/quick_shorten?url=${longUrl}`,
+					`https://scissor-api-bosc.onrender.com/api/url/quick_shorten?url=${longUrl}`,
 				);
 				if (res.ok) {
 					const data = await res.json();
@@ -543,7 +543,7 @@ export const UrlShortener = () => {
 							<Label htmlFor="alias">Custom alias(Optional)</Label>
 							<div className="flex flex-row items-center">
 								<p className="text-slate-800 text-normal font-sm">
-									localhost:8000/
+								scissor-api-bosc.onrender.com/
 								</p>
 								<span className="inline-flex flex-col w-full pl-1">
 									<Input

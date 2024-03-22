@@ -25,7 +25,7 @@ import axios from "axios";
 import { UseAuthContext } from "@/context/auth-context";
 
 export const api = axios.create({
-	baseURL: "http://localhost:8000/api",
+	baseURL: "https://scissor-api-bosc.onrender.com/api",
 });
 /**
  * Fetches data from the specified URL using axios.

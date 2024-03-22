@@ -88,7 +88,7 @@ const NewLinkForm: React.FC<FormHTMLAttributes<HTMLFormElement> & {}> = ({
 				/>
 				<div className="flex items-end justify-center gap-2 h-fit">
 					<p className="text-slate-800 text-normal h-full font-medium bg-slate-100 rounded-l-sm border-[1px] border-slate-300 py-3 pl-4 pr-3">
-						localhost:8000/
+					scissor-api-bosc.onrender.com/
 					</p>
 					<InputGroup
 						id="alias"

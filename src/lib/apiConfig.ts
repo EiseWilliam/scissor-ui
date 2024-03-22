@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'http://localhost:3000/api';
+export const API_BASE_URL = 'https://scissor-api-bosc.onrender.com/api';
 
 export const endpoints = {
     urls: '/url/my_urls',
