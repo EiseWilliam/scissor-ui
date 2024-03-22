@@ -19,18 +19,19 @@ import { api, fetcher, request } from "@/lib/utils";
 import { UseAuthContext } from "@/context/auth-context";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchRecentUrls } from "@/services/query";
 import { QrCode, QrCodeIcon } from "lucide-react";
+import { RadioGroupItem, RadioGroup} from "./ui/radio-group";
 type urlClicks = Record<string, number>;
 
 function RecentURLs() {
 	const { accessToken } = UseAuthContext();
-	const {copiedText, copy}= useCopy();
+	const { copiedText, copy } = useCopy();
 	const { data, error, isLoading } = useQuery({
 		queryKey: ["recent_urls", accessToken],
-		queryFn: () => fetchRecentUrls(accessToken),}
-	)
+		queryFn: () => fetchRecentUrls(accessToken),
+	});
 	// useEffect(() => {
 	// 	const storedUrls = localStorage.getItem("myShortUrls");
 	// 	if (storedUrls) {
@@ -84,9 +85,7 @@ function RecentURLs() {
 							className="flex items-center justify-between p-4 bg-gray-100 rounded-md h-14 dark:bg-gray-700"
 						>
 							<div>
-								<p className="text-sm text-gray-900 dark:text-white">
-									{url}
-								</p>
+								<p className="text-sm text-gray-900 dark:text-white">{url}</p>
 								<p className="text-xs text-gray-500">Clicked {clicks} times</p>
 							</div>
 							<Button size="sm" variant="ghost" onClick={() => copy(url)}>
@@ -118,8 +117,6 @@ const AliasFeedback: React.FC<AliasFeedbackProps> = ({ isAvailable }) => {
 };
 
 const MemoRecent = memo(RecentURLs);
-
-
 
 export function AuthShortenerPanel() {
 	const { accessToken } = UseAuthContext();
@@ -325,6 +322,7 @@ export function QRPanel() {
 
 	const [url, setUrl] = useState("");
 	const [qr, setQr] = useState(null);
+	const [error, setError] = useState("");
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -381,6 +379,40 @@ export function QRPanel() {
 						isAdvanced={isAdvanced}
 						setIsAdvanced={setIsAdvanced}
 					/>
+					{error && (
+						<motion.p
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							transition={{ duration: 0.9 }}
+							className="flex items-center pl-4 py-2 w-full ml-0 gap-2 text-sm rounded-md bg-yellow-100 text-destructive"
+						>
+							{/* <ExclamationTriangleIcon/>  */}
+							{error}
+						</motion.p>
+					)}
+					{isAdvanced && (
+						<motion.div
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							transition={{ duration: 0.9 }}
+						>
+							<Label htmlFor="color">Color</Label>
+							<RadioGroup defaultValue="black" className="flex flex-row">
+								<div className="flex items-center space-x-2">
+									<RadioGroupItem value="black" id="r1" className="bg-black h-8 w-8 rounded-md border-none" />
+									{/* <Label htmlFor="r1">black</Label> */}
+								</div>
+								<div className="flex items-center space-x-2">
+									<RadioGroupItem value="blue" id="r2" className="bg-blue-500 h-8 w-8 rounded-md border-none"/>
+									{/* <Label htmlFor="r2">blue</Label> */}
+								</div>
+								<div className="flex items-center space-x-2">
+									<RadioGroupItem value="red" id="r3" className="bg-red-600 h-8 w-8 rounded-md border-none" />
+									{/* <Label htmlFor="r3">red</Label> */}
+								</div>
+							</RadioGroup>
+						</motion.div>
+					)}
 
 					{!isLoading ? (
 						<Button
@@ -464,6 +496,7 @@ export const UrlShortener = () => {
 	const [error, setError] = useState("");
 	const [newUrls, setNewUrls] = useState<string[]>([]);
 	const [isAdvanced, setIsAdvanced] = useState(false);
+	const queryClient = useQueryClient();
 
 	const verifyCustom = (alias: string) => {
 		fetcher(`/url/verify_custom?alias=${alias}`)
@@ -493,20 +526,25 @@ export const UrlShortener = () => {
 					config,
 				);
 				if (res.status === 200) {
-					// ... handle successful advanced shortening
+					queryClient.invalidateQueries({
+						queryKey: ["recent_urls", accessToken],
+					});
 				} else {
 					setError(res.data);
 				}
 			} else {
-				const res = await fetch(
-					`https://scissor-api-bosc.onrender.com/api/url/quick_shorten?url=${longUrl}`,
+				setError(
+					"Service currently unavailable for unauthenticated users, Please login",
 				);
-				if (res.ok) {
-					const data = await res.json();
-					// addValueToArray(data); // ... handle successful simple shortening
-				} else {
-					setError(res.status.toString());
-				}
+				// const res = await fetch(
+				// 	`https://scissor-api-bosc.onrender.com/api/url/quick_shorten?url=${longUrl}`,
+				// );
+				// if (res.ok) {
+				// 	const data = await res.json();
+				// 	// addValueToArray(data); // ... handle successful simple shortening
+				// } else {
+				// 	setError(res.status.toString());
+				// }
 			}
 		} catch (error) {
 			setError(error.message);
@@ -534,6 +572,17 @@ export const UrlShortener = () => {
 						isAdvanced={isAdvanced}
 						setIsAdvanced={setIsAdvanced}
 					/>
+					{error && (
+						<motion.p
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							transition={{ duration: 0.9 }}
+							className="flex items-center pl-4 py-2 w-full ml-0 gap-2 text-sm rounded-md bg-yellow-100 text-destructive"
+						>
+							{/* <ExclamationTriangleIcon/>  */}
+							{error}
+						</motion.p>
+					)}
 					{isAdvanced && (
 						<motion.div
 							initial={{ opacity: 0 }}
@@ -543,7 +592,7 @@ export const UrlShortener = () => {
 							<Label htmlFor="alias">Custom alias(Optional)</Label>
 							<div className="flex flex-row items-center">
 								<p className="text-slate-800 text-normal font-sm">
-								scissor-api-bosc.onrender.com/
+									scissor-api-bosc.onrender.com/
 								</p>
 								<span className="inline-flex flex-col w-full pl-1">
 									<Input

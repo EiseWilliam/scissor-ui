@@ -19,7 +19,7 @@ import { Route as IndexImport } from './routes/index'
 import { Route as DashboardLayoutImport } from './routes/dashboard/_layout'
 import { Route as DashboardLayoutIndexImport } from './routes/dashboard/_layout.index'
 import { Route as DashboardLayoutUrlsImport } from './routes/dashboard/_layout.urls'
-import { Route as DashboardLayoutProfileImport } from './routes/dashboard/_layout.profile'
+import { Route as DashboardLayoutQrsImport } from './routes/dashboard/_layout.qrs'
 import { Route as DashboardLayoutNewImport } from './routes/dashboard/_layout.new'
 import { Route as DashboardLayoutShortUrlIndexImport } from './routes/dashboard/_layout.$shortUrl/index'
 import { Route as DashboardLayoutShortUrlAnalyticsImport } from './routes/dashboard/_layout.$shortUrl/analytics'
@@ -65,8 +65,8 @@ const DashboardLayoutUrlsRoute = DashboardLayoutUrlsImport.update({
   getParentRoute: () => DashboardLayoutRoute,
 } as any)
 
-const DashboardLayoutProfileRoute = DashboardLayoutProfileImport.update({
-  path: '/profile',
+const DashboardLayoutQrsRoute = DashboardLayoutQrsImport.update({
+  path: '/qrs',
   getParentRoute: () => DashboardLayoutRoute,
 } as any)
 
@@ -115,8 +115,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutNewImport
       parentRoute: typeof DashboardLayoutImport
     }
-    '/dashboard/_layout/profile': {
-      preLoaderRoute: typeof DashboardLayoutProfileImport
+    '/dashboard/_layout/qrs': {
+      preLoaderRoute: typeof DashboardLayoutQrsImport
       parentRoute: typeof DashboardLayoutImport
     }
     '/dashboard/_layout/urls': {
@@ -147,7 +147,7 @@ export const routeTree = rootRoute.addChildren([
   DashboardRoute.addChildren([
     DashboardLayoutRoute.addChildren([
       DashboardLayoutNewRoute,
-      DashboardLayoutProfileRoute,
+      DashboardLayoutQrsRoute,
       DashboardLayoutUrlsRoute,
       DashboardLayoutIndexRoute,
       DashboardLayoutShortUrlAnalyticsRoute,

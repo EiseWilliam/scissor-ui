@@ -17,6 +17,20 @@ export async function fetchUrls(accessToken: string | null) {
         throw new Error(response.statusText);
 }
 
+export async function fetchQRs(accessToken: string | null) {
+    if (accessToken === null) {
+        throw new Error("No access token provided");
+    }
+    const url = endpoints.qrs;
+    const headers = {
+        Authorization: `Bearer ${accessToken}`,
+    };
+        const response = await api.get(url, { headers });
+        if (response.status === 200) {
+            return response.data;
+        }
+        throw new Error(response.statusText);
+}
 export async function fetchUrlDetails(shortUrl:string, accessToken: string | null) {
     if (accessToken === null) {
         throw new Error("No access token provided");
@@ -31,7 +45,6 @@ export async function fetchUrlDetails(shortUrl:string, accessToken: string | nul
     }
     throw new Error(response.statusText);
 }
-
 export async function fetchAnalytics(shortUrl:string, accessToken: string | null) {
     if (accessToken === null) {
         throw new Error("No access token provided");

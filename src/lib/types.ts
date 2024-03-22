@@ -11,6 +11,7 @@ export type urlDetails = {
 	title: string;
 	thumbnail: string;
 	has_qr: boolean;
+	qr_preview?: string;
 	short_url: string;
 	original_url: string;
 	created_at: string;

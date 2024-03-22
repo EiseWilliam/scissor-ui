@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { CalendarIcon, CopyIcon } from "@radix-ui/react-icons";
+import { CalendarIcon, CopyIcon, DownloadIcon } from "@radix-ui/react-icons";
 import type { urlDetails } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import React, {
@@ -112,6 +112,71 @@ export const ShortenedUrlCard: FC<ShortenedUrlCardProps> = ({
 		</Card>
 	);
 };
+
+export const QRDetailsCard: FC<ShortenedUrlCardProps> = ({
+	data,
+	className,
+	...props
+}) => {
+	return (
+		<Card
+			className={cn("flex flex-row p-4 gap-10 w-full", className)}
+			{...props}
+		>
+			<div>
+				<img
+					src={data.qr_preview}
+					alt="qr preview"
+					// width={100}
+					// height={100}
+					className="rounded-sm h-full p-8"
+				/>
+				<DownloadIcon />
+			</div>
+			<div className={cn("flex flex-col gap-5")}>
+				<div>
+					<div className="flex flex-col gap-2">
+						<h2 className="text-slate-800 font-bold text-2xl">{data.title}</h2>
+						<p className="text-blue-500 font-medium">{data.short_url}</p>
+						<h3 className="text-gray-400 font-sans text-sm font-light">
+							{data.original_url}
+						</h3>
+					</div>
+				</div>
+				<div className="flex flex-row gap-5 items-center text-slate-700 text-sm">
+					<span className="inline-flex">
+						<CalendarIcon />
+						{formatDate(data.created_at)}
+					</span>
+					<Link
+						className="inline-flex"
+						to="/dashboard/$shortUrl/analytics"
+						params={{ shortUrl: data.short_url }}
+					>
+						<BarChart2Icon className="w-4 h-4" />
+						Analytics
+					</Link>
+					<span className="inline-flex">
+						<LucideQrCode className="w-4 h-4" />
+						QR Code
+					</span>
+				</div>
+			</div>
+			<div className="justify-self-end flex-grow gap-1 flex justify-end">
+				{/* <p className="w-15 h-15 text-sm">Edit</p> */}
+				<EditButton data={data} />
+
+				<Button
+					variant="outline"
+					className="w-fit rounded-none h-fit p-2 gap-2"
+				>
+					<Trash2Icon className="w-4 h-4 " color="red" />
+				</Button>
+			</div>
+		</Card>
+	);
+};
+
 
 export const EditButton: React.FC<{ data: urlDetails }> = ({ data }) => {
 	const [open, setOpen] = React.useState(false);

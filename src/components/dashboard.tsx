@@ -39,7 +39,7 @@ export function DashNavMenu() {
 				>
 					<Link
 						className="flex flex-row items-center gap-1.5 text-sm [&.active]:font-bold"
-						to="/dashboard/profile"
+						to="/dashboard/qrs"
 						activeProps={{
 							className: "font-bold text-blue-600",
 						}}
