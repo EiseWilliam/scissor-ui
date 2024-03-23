@@ -22,7 +22,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchRecentUrls } from "@/services/query";
 import { QrCode, QrCodeIcon } from "lucide-react";
-import { RadioGroupItem, RadioGroup} from "./ui/radio-group";
+import { RadioGroupItem, RadioGroup } from "./ui/radio-group";
 type urlClicks = Record<string, number>;
 
 function RecentURLs() {
@@ -74,6 +74,7 @@ function RecentURLs() {
 					</div>
 				)}
 				{error && <p className="text-red-500">{error.message}</p>}
+				{!isLoading && !error && !data && <p>No Recent Urls for User yet.</p>}
 				{!isLoading &&
 					!error &&
 					Object.entries(data as urlClicks).map(([url, clicks]) => (
@@ -399,15 +400,27 @@ export function QRPanel() {
 							<Label htmlFor="color">Color</Label>
 							<RadioGroup defaultValue="black" className="flex flex-row">
 								<div className="flex items-center space-x-2">
-									<RadioGroupItem value="black" id="r1" className="bg-black h-8 w-8 rounded-md border-none" />
+									<RadioGroupItem
+										value="black"
+										id="r1"
+										className="bg-black h-8 w-8 rounded-md border-none"
+									/>
 									{/* <Label htmlFor="r1">black</Label> */}
 								</div>
 								<div className="flex items-center space-x-2">
-									<RadioGroupItem value="blue" id="r2" className="bg-blue-500 h-8 w-8 rounded-md border-none"/>
+									<RadioGroupItem
+										value="blue"
+										id="r2"
+										className="bg-blue-500 h-8 w-8 rounded-md border-none"
+									/>
 									{/* <Label htmlFor="r2">blue</Label> */}
 								</div>
 								<div className="flex items-center space-x-2">
-									<RadioGroupItem value="red" id="r3" className="bg-red-600 h-8 w-8 rounded-md border-none" />
+									<RadioGroupItem
+										value="red"
+										id="r3"
+										className="bg-red-600 h-8 w-8 rounded-md border-none"
+									/>
 									{/* <Label htmlFor="r3">red</Label> */}
 								</div>
 							</RadioGroup>
@@ -432,10 +445,7 @@ export function QRPanel() {
 			<CardFooter className="flex items-center justify-center">
 				{/* biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation> */}
 				{qr ? (
-					<div
-						className="rounded-lg"
-						dangerouslySetInnerHTML={{ __html: qr }}
-					/>
+					<SVG src={qr} />
 				) : (
 					<QrCode className="w-full bg-opacity-40" size={300} />
 				)}
@@ -488,7 +498,7 @@ const IsAdvancedCheckbox: FC<{
 };
 
 export const UrlShortener = () => {
-	const { accessToken } = UseAuthContext();
+	const { accessToken, isAuthenticated } = UseAuthContext();
 	const [longUrl, setLongUrl] = useState("");
 	const [alias, setAlias] = useState("");
 	const [aliasAvailable, setAliasAvailable] = useState(null);
@@ -519,6 +529,12 @@ export const UrlShortener = () => {
 		setIsLoading(true);
 
 		try {
+			if (!isAuthenticated) {
+				setError(
+					"Service currently unavailable for unauthenticated users, Please login",
+				);
+				return
+			}
 			if (isAdvanced) {
 				const res = await api.post(
 					"/url/shorten",
@@ -533,9 +549,19 @@ export const UrlShortener = () => {
 					setError(res.data);
 				}
 			} else {
-				setError(
-					"Service currently unavailable for unauthenticated users, Please login",
+			
+				const res = await api.post(
+					"/url/shorten",
+					{ url: longUrl },
+					config,
 				);
+				if (res.status === 200) {
+					queryClient.invalidateQueries({
+						queryKey: ["recent_urls", accessToken],
+					});
+				} else {
+					setError(res.data);
+				}
 				// const res = await fetch(
 				// 	`https://scissor-api-bosc.onrender.com/api/url/quick_shorten?url=${longUrl}`,
 				// );
